@@ -3,6 +3,7 @@ package com.sparkx.model;
 import java.util.Date;
 
 public class Record {
+    private  String patientId;
     private String serialNumber;
     private String bedId;
     private String hospitalId;
@@ -11,6 +12,13 @@ public class Record {
     private Date dischargedDate;
     private int queueId;
 
+    public String getPatientId() {
+        return patientId;
+    }
+
+    public void setPatientId(String patientId) {
+        this.patientId = patientId;
+    }
 
     public String getSerialNumber() {
         return serialNumber;
