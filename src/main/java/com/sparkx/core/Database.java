@@ -1,32 +1,30 @@
 package com.sparkx.core;
 
+import org.apache.commons.dbcp2.BasicDataSource;
+
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Properties;
 
 public class Database {
 
-    private static Connection dbConnection;
     private static final String URL = "jdbc:postgresql://localhost/SparkX";
+    private static BasicDataSource connectionPool;
 
     private Database(){}
 
-    public static synchronized Connection getDbConnection(){
-        Properties props = new Properties();
-
-        props.setProperty("user", "postgres");
-        props.setProperty("password", "");
-        if (dbConnection == null){
-            try {
-                dbConnection = DriverManager.getConnection(URL, props);
-                System.out.println("Connected to the PostgreSQL server successfully.");
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-            }
-        }
-        return dbConnection;
+    static {
+        connectionPool = new BasicDataSource();
+        connectionPool.setDriverClassName("org.postgresql.Driver");
+        connectionPool.setUrl(URL);
+        connectionPool.setUsername("postgres");
+        connectionPool.setPassword("19970923");
+        connectionPool.setMinIdle(5);
+        connectionPool.setMaxIdle(10);
+        connectionPool.setMaxOpenPreparedStatements(100);
     }
-
+    public static Connection getConnection() throws SQLException
+    {
+        return connectionPool.getConnection();
+    }
 
 }
