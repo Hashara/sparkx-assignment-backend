@@ -4,7 +4,7 @@ import com.sparkx.model.Types.SeverityLevel;
 
 import java.util.Date;
 
-public class Severity{
+public class Severity {
     private String severityId;
     private SeverityLevel level;
     private String doctorId;

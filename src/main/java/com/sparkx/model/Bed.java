@@ -8,7 +8,7 @@ public class Bed {
     private String hospitalId;
     private StatusType status;
 
-     public String getBedId() {
+    public String getBedId() {
         return bedId;
     }
 

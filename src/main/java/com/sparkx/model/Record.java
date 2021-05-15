@@ -2,7 +2,7 @@ package com.sparkx.model;
 
 import java.util.Date;
 
-public class Record{
+public class Record {
     private String serialNumber;
     private String bedId;
     private String hospitalId;

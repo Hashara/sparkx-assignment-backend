@@ -1,5 +1,6 @@
 package com.sparkx.core;
 
+import com.sparkx.config.DBConfig;
 import org.apache.commons.dbcp2.BasicDataSource;
 
 import java.sql.Connection;
@@ -7,7 +8,6 @@ import java.sql.SQLException;
 
 public class Database {
 
-    private static final String URL = "jdbc:postgresql://localhost/SparkX";
     private static BasicDataSource connectionPool;
 
     private Database(){}
@@ -15,9 +15,9 @@ public class Database {
     static {
         connectionPool = new BasicDataSource();
         connectionPool.setDriverClassName("org.postgresql.Driver");
-        connectionPool.setUrl(URL);
-        connectionPool.setUsername("postgres");
-        connectionPool.setPassword("19970923");
+        connectionPool.setUrl(DBConfig.DB_URL);
+        connectionPool.setUsername(DBConfig.USERNAME);
+        connectionPool.setPassword(DBConfig.PASSWORD);
         connectionPool.setMinIdle(5);
         connectionPool.setMaxIdle(10);
         connectionPool.setMaxOpenPreparedStatements(100);

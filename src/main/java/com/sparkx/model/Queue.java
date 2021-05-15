@@ -2,7 +2,7 @@ package com.sparkx.model;
 
 import com.sparkx.model.Types.StatusType;
 
-public class Queue{
+public class Queue {
     private int queueId;
     private StatusType status;
 
