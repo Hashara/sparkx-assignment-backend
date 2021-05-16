@@ -1,13 +1,18 @@
 package com.sparkx.service;
 
+import com.sparkx.Util.Query;
 import com.sparkx.config.Config;
 import com.sparkx.core.Database;
 import com.sparkx.model.Hospital;
 import com.sparkx.model.Types.StatusType;
+import org.apache.log4j.Logger;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class HospitalService {
+    Logger logger = Logger.getLogger(HospitalService.class);
 
     public boolean createHospital(Hospital hospital) {
         try (Connection connection = Database.getConnection();
@@ -35,23 +40,59 @@ public class HospitalService {
             connection.commit();
             return true;
         } catch (SQLException throwables) {
-            System.out.println(throwables.getMessage());
-            throwables.printStackTrace();
+            logger.error(throwables.getMessage());
             return false;
         }
 
     }
 
-    public void getAllHospitals() {
-        // todo: covert to json and add return
+    public List<Hospital>  getAllHospitals() {
+        List<Hospital> hospitalList = new ArrayList<>();
         try (Connection connection = Database.getConnection();
              Statement statement = connection.createStatement()) {
-
             ResultSet resultSet = statement.executeQuery(Query.HOSPITAL_ALL);
 
-            System.out.println(resultSet);
+            hospitalList = mapResultSet(resultSet);
+
+        } catch (SQLException throwables) {
+            System.out.println(throwables.getMessage());
+            logger.error(throwables.getMessage());
+            throwables.printStackTrace();
+        }
+        return hospitalList;
+    }
+
+    public List<Hospital> getHospitalByDistrict(String district){
+        List<Hospital> hospitalList = new ArrayList<>();
+        try (Connection connection = Database.getConnection();
+             PreparedStatement statement = connection.prepareStatement(Query.HOSPITAL_BY_DISTRICT)) {
+
+            statement.setString(1, district);
+            ResultSet resultSet = statement.executeQuery();
+
+            hospitalList = mapResultSet(resultSet);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
+
+        return hospitalList;
+
     }
+
+    private List<Hospital> mapResultSet(ResultSet resultSet) throws SQLException {
+        List<Hospital> hospitalList = new ArrayList<>();
+
+        while ( resultSet.next() ) {
+            Hospital h = new Hospital();
+            h.setHospitalId(resultSet.getString("hospitalid"));
+            h.setName(resultSet.getString("name"));
+            h.setDistrict(resultSet.getString("district"));
+            h.setLocation_x(resultSet.getInt("location_x"));
+            h.setLocation_y(resultSet.getInt("location_y"));
+
+            hospitalList.add(h);
+        }
+        return hospitalList;
+    }
+
 }

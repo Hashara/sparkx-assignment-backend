@@ -1,4 +1,4 @@
-package com.sparkx.service;
+package com.sparkx.Util;
 
 public class Query {
 
@@ -14,12 +14,13 @@ public class Query {
     /* hospital queries */
     public static final String HOSPITAL_CREATE = "INSERT INTO " + HOSPITAL_TABLE + " (hospitalid, name, district, location_x, location_y) VALUES (?, ?, ?, ?, ?)";
     public static final String HOSPITAL_ALL = "SELECT hospitalid, name, district, location_x, location_y FROM " + HOSPITAL_TABLE;
-
+    public static final String HOSPITAL_BY_DISTRICT = HOSPITAL_ALL + "WHERE district=?";
 
     /* person queries */
     public static final String PERSON_CREATE = "INSERT INTO " + PERSON_TABLE + " (userid, email, password, first_name, last_name, hospitalid, role) VALUES (?, ?, ?, ?, ?, ?, ?)";
     public static final String PERSON_ALL = "SELECT userid, email, first_name, last_name, hospitalid, role FROM " + PERSON_TABLE;
     public static final String PERSON_BY_ID = PERSON_ALL + "WHERE userid = ?";
+    public static final String PERSON_BY_ROLE = PERSON_ALL + "WHERE role=?";
 
     /* patient queries */
     public static final String PATIENT_CREATE = "INSERT INTO " + PATIENT_TABLE + " ( patientid, userid, district, location_x, location_y, gender, contact, birthdate) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";

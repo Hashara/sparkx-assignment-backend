@@ -46,4 +46,10 @@ public class Hospital {
     public void setLocation_y(int location_y) {
         this.location_y = location_y;
     }
+
+    @Override
+    public String toString() {
+        return "id:" + getHospitalId() + ", name:" + getName() + ", district:" + getDistrict() +
+                ", x:" + getLocation_x() + ", y:" + getLocation_y();
+    }
 }
