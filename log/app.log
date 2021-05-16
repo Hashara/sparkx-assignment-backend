@@ -1,0 +1,2 @@
+[ERROR] 2021-05-16 13:19:26,833 com.sparkx.service.HospitalService getAllHospitals - org.apache.commons.dbcp2.DelegatingStatement with address: "NULL" is closed.
+[ERROR] 2021-05-16 13:34:32,117 com.sparkx.service.HospitalService getAllHospitals - org.apache.commons.dbcp2.DelegatingStatement with address: "NULL" is closed.
