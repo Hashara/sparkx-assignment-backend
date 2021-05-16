@@ -28,7 +28,7 @@ public class Query {
     public static final String PATIENT_BY_USER_ID = PATIENT_ALL + " WHERE userid = ?";
 
     /* bed queries */
-    public static final String BED_CREATE = "INSERT INTO " + BED_TABLE +" (bedid, hospitalid, status) VALUES (?, ?, ?)";
+    public static final String BEDS_CREATE = "INSERT INTO " + BED_TABLE +" (bedid, hospitalid, status) VALUES (1, ?, ?::statusType),(2, ?, ?::statusType),(3, ?, ?::statusType),(4, ?, ?::statusType),(5, ?, ?::statusType),(6, ?, ?::statusType),(7, ?, ?::statusType),(8, ?, ?::statusType),(9, ?, ?::statusType),(10, ?, ?::statusType)";
     public static final String BED_ALL = "SELECT bedid, hospitalid, status FROM " + BED_TABLE;
     public static final String BED_BY_STATUS = BED_ALL + " WHERE status= ?";
     public static final String BED_BY_HOSPITAL_ID = BED_ALL + " WHERE hospitalid=?";
