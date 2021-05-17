@@ -2,11 +2,10 @@ package com.sparkx.model;
 
 import com.sparkx.model.Types.GenderType;
 
-import java.util.Date;
+import java.sql.Date;
 
 public class Patient {
     private String patientId;
-    private String userId;
     private String district;
     private int location_x;
     private int location_y;
@@ -20,14 +19,6 @@ public class Patient {
 
     public void setPatientId(String patientId) {
         this.patientId = patientId;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
     }
 
     public String getDistrict() {

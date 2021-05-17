@@ -1,2 +1,11 @@
-[ERROR] 2021-05-16 13:19:26,833 com.sparkx.service.HospitalService getAllHospitals - org.apache.commons.dbcp2.DelegatingStatement with address: "NULL" is closed.
-[ERROR] 2021-05-16 13:34:32,117 com.sparkx.service.HospitalService getAllHospitals - org.apache.commons.dbcp2.DelegatingStatement with address: "NULL" is closed.
+[ERROR] 2021-05-17 08:24:09,275 com.sparkx.service.PatientService addPatient - No value specified for parameter 6.
+[ERROR] 2021-05-17 08:25:15,125 com.sparkx.service.PatientService addPatient - ERROR: value too long for type character varying(50)
+[ERROR] 2021-05-17 10:08:42,785 com.sparkx.service.PatientService addPatient - ERROR: column "userid" of relation "patient" does not exist
+  Position: 34
+[ERROR] 2021-05-17 10:10:29,975 com.sparkx.service.PatientService addPatient - No value specified for parameter 8.
+[ERROR] 2021-05-17 10:11:38,607 com.sparkx.service.PatientService addPatient - ERROR: column "gender" is of type gendertypes but expression is of type character varying
+  Hint: You will need to rewrite or cast the expression.
+  Position: 120
+[ERROR] 2021-05-17 10:19:04,650 com.sparkx.service.PatientService addPatient - ERROR: column "gender" is of type gendertypes but expression is of type character varying
+  Hint: You will need to rewrite or cast the expression.
+  Position: 120

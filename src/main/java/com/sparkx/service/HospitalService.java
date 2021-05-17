@@ -1,6 +1,6 @@
 package com.sparkx.service;
 
-import com.sparkx.Util.Query;
+import com.sparkx.util.Query;
 import com.sparkx.config.Config;
 import com.sparkx.core.Database;
 import com.sparkx.model.Hospital;
@@ -52,10 +52,9 @@ public class HospitalService {
              Statement statement = connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery(Query.HOSPITAL_ALL);
 
-            hospitalList = mapResultSet(resultSet);
+            hospitalList = mapResultSetToHospitalList(resultSet);
 
         } catch (SQLException throwables) {
-            System.out.println(throwables.getMessage());
             logger.error(throwables.getMessage());
             throwables.printStackTrace();
         }
@@ -70,7 +69,7 @@ public class HospitalService {
             statement.setString(1, district);
             ResultSet resultSet = statement.executeQuery();
 
-            hospitalList = mapResultSet(resultSet);
+            hospitalList = mapResultSetToHospitalList(resultSet);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -79,7 +78,7 @@ public class HospitalService {
 
     }
 
-    private List<Hospital> mapResultSet(ResultSet resultSet) throws SQLException {
+    private List<Hospital> mapResultSetToHospitalList(ResultSet resultSet) throws SQLException {
         List<Hospital> hospitalList = new ArrayList<>();
 
         while ( resultSet.next() ) {
