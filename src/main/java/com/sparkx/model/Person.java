@@ -3,17 +3,13 @@ package com.sparkx.model;
 import com.sparkx.model.Types.RoleType;
 
 public class Person {
-    public String userId;
-    public String email;
-    public String password;
-    public String first_name;
-    public String last_name;
-    public String hospitalId;
-    public RoleType role;
-
-    public Person(String userId) {
-        this.userId = userId;
-    }
+    private String userId;
+    private String email;
+    private String password;
+    private String first_name;
+    private String last_name;
+    private String hospitalId;
+    private RoleType role;
 
     public String getUserId() {
         return userId;
@@ -69,5 +65,11 @@ public class Person {
 
     public void setRole(RoleType role) {
         this.role = role;
+    }
+
+    @Override
+    public String toString() {
+        return "userId:" + getUserId() + ", firstName:" + getFirst_name() + ", lastName:" + getLast_name() +
+                ", email:" + getEmail() + ", role:" + getRole() + ", hospitalId:" + getHospitalId();
     }
 }

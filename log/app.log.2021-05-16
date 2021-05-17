@@ -1,0 +1,30 @@
+[ERROR] 2021-05-16 13:19:26,833 com.sparkx.service.HospitalService getAllHospitals - org.apache.commons.dbcp2.DelegatingStatement with address: "NULL" is closed.
+[ERROR] 2021-05-16 13:34:32,117 com.sparkx.service.HospitalService getAllHospitals - org.apache.commons.dbcp2.DelegatingStatement with address: "NULL" is closed.
+[ERROR] 2021-05-16 16:42:16,032 com.sparkx.service.PersonService createPerson - ERROR: value too long for type character varying(20)
+[ERROR] 2021-05-16 16:47:57,706 com.sparkx.service.PersonService createPerson - ERROR: value too long for type character varying(20)
+[ERROR] 2021-05-16 16:48:03,062 com.sparkx.service.PersonService createPerson - ERROR: value too long for type character varying(20)
+[ERROR] 2021-05-16 16:51:30,546 com.sparkx.service.PersonService createPerson - ERROR: value too long for type character varying(20)
+[ERROR] 2021-05-16 16:52:41,200 com.sparkx.service.PersonService createPerson - ERROR: value too long for type character varying(20)
+[ERROR] 2021-05-16 16:52:59,169 com.sparkx.service.PersonService createPerson - ERROR: value too long for type character varying(20)
+[ERROR] 2021-05-16 17:04:00,120 com.sparkx.service.PersonService createPerson - ERROR: value too long for type character varying(50)
+[ERROR] 2021-05-16 17:04:45,808 com.sparkx.service.PersonService createPerson - ERROR: value too long for type character varying(50)
+[ERROR] 2021-05-16 17:50:19,061 com.sparkx.service.PersonService createPerson - ERROR: value too long for type character varying(10)
+[ERROR] 2021-05-16 17:50:45,864 com.sparkx.service.PersonService createPerson - ERROR: value too long for type character varying(10)
+[ERROR] 2021-05-16 17:52:25,288 com.sparkx.service.PersonService createPerson - ERROR: value too long for type character varying(12)
+[ERROR] 2021-05-16 18:00:26,679 com.sparkx.service.PersonService getUserById - ERROR: syntax error at or near "="
+  Position: 87
+[ERROR] 2021-05-16 18:01:08,498 com.sparkx.service.PersonService getUserById - ERROR: syntax error at or near "="
+  Position: 87
+[ERROR] 2021-05-16 18:01:41,769 com.sparkx.service.PersonService getUserById - ERROR: syntax error at or near "="
+  Position: 87
+[ERROR] 2021-05-16 18:01:56,132 com.sparkx.service.PersonService getUserById - ERROR: syntax error at or near "="
+  Position: 87
+[ERROR] 2021-05-16 18:02:17,912 com.sparkx.service.PersonService getUserById - ERROR: syntax error at or near "="
+  Position: 87
+[ERROR] 2021-05-16 18:12:20,543 com.sparkx.service.PersonService getUserById - ERROR: syntax error at or near "="
+  Position: 87
+[ERROR] 2021-05-16 18:12:39,850 com.sparkx.service.PersonService getUserById - ERROR: syntax error at or near "="
+  Position: 87
+[ERROR] 2021-05-16 18:16:32,460 com.sparkx.service.PersonService getUserById - ERROR: syntax error at or near "="
+  Position: 87
+[ERROR] 2021-05-16 20:15:57,346 com.sparkx.service.PersonService createPerson - ERROR: value too long for type character varying(12)
