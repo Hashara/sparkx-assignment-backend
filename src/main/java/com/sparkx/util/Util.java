@@ -2,6 +2,8 @@ package com.sparkx.util;
 
 import org.mindrot.jbcrypt.BCrypt;
 
+import java.util.UUID;
+
 public class Util {
 
     public String hashPassword(String plainTextPassword){
@@ -13,5 +15,9 @@ public class Util {
             System.out.println("The password matches.");
         else
             System.out.println("The password does not match.");
+    }
+
+    public UUID getUUID(){
+        return UUID.randomUUID();
     }
 }
