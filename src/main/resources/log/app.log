@@ -1,2 +1,39 @@
 [ERROR] 2021-05-28 16:05:35,209 com.sparkx.service.PatientService getPatientById - ERROR: invalid input syntax for type uuid: "-70e1-45c4-9415-211074117f6c"
 [ERROR] 2021-05-28 16:40:02,287 com.sparkx.service.PatientService getPatientById - Patient not found
+[ERROR] 2021-05-28 20:37:23,899 com.sparkx.service.RecordService addRecord - ERROR: syntax error at or near "patientid"
+  Position: 20
+[ERROR] 2021-05-28 20:40:00,773 com.sparkx.service.RecordService addRecord - ERROR: syntax error at or near "patientid"
+  Position: 20
+[ERROR] 2021-05-28 20:40:44,929 com.sparkx.service.RecordService addRecord - ERROR: syntax error at or near "patientid"
+  Position: 20
+[ERROR] 2021-05-28 20:44:04,379 com.sparkx.service.RecordService addRecord - ERROR: insert or update on table "record" violates foreign key constraint "record_queueid_fkey"
+  Detail: Key (queueid)=(0) is not present in table "queue".
+[ERROR] 2021-05-28 20:45:05,394 com.sparkx.service.RecordService addRecord - ERROR: syntax error at or near "="
+  Position: 18
+[ERROR] 2021-05-28 20:46:53,886 com.sparkx.service.RecordService addRecord - ERROR: column "status" is of type statustype but expression is of type character varying
+  Hint: You will need to rewrite or cast the expression.
+  Position: 23
+[ERROR] 2021-05-28 20:47:33,566 com.sparkx.service.RecordService addRecord - ERROR: insert or update on table "record" violates foreign key constraint "record_queueid_fkey"
+  Detail: Key (queueid)=(0) is not present in table "queue".
+[ERROR] 2021-05-28 20:55:22,401 com.sparkx.service.RecordService addRecord - ERROR: insert or update on table "record" violates foreign key constraint "record_queueid_fkey"
+  Detail: Key (queueid)=(0) is not present in table "queue".
+[ERROR] 2021-05-28 20:55:30,442 com.sparkx.service.RecordService addRecord - ERROR: insert or update on table "record" violates foreign key constraint "record_queueid_fkey"
+  Detail: Key (queueid)=(0) is not present in table "queue".
+[ERROR] 2021-05-28 21:04:17,901 com.sparkx.service.RecordService addRecord - ERROR: insert or update on table "record" violates foreign key constraint "record_queueid_fkey"
+  Detail: Key (queueid)=(0) is not present in table "queue".
+[ERROR] 2021-05-28 21:06:54,882 com.sparkx.service.RecordService addRecord - ERROR: insert or update on table "record" violates foreign key constraint "record_queueid_fkey"
+  Detail: Key (queueid)=(0) is not present in table "queue".
+[ERROR] 2021-05-28 21:08:34,513 com.sparkx.service.RecordService addRecord - ERROR: insert or update on table "record" violates foreign key constraint "record_queueid_fkey"
+  Detail: Key (queueid)=(0) is not present in table "queue".
+[ERROR] 2021-05-28 21:11:41,758 com.sparkx.service.RecordService addRecord - ERROR: insert or update on table "record" violates foreign key constraint "record_queueid_fkey"
+  Detail: Key (queueid)=(0) is not present in table "queue".
+[ERROR] 2021-05-28 21:18:46,173 com.sparkx.service.HospitalService getQueue - ERROR: relation "queue" does not exist
+  Position: 39
+[ERROR] 2021-05-28 21:18:46,187 com.sparkx.service.RecordService addRecord - No value specified for parameter 8.
+[ERROR] 2021-05-28 22:11:22,325 com.sparkx.service.HospitalService getQueue - ERROR: relation "queue" does not exist
+  Position: 39
+[ERROR] 2021-05-28 22:11:22,344 com.sparkx.service.RecordService addRecord - ERROR: relation "record" does not exist
+  Position: 13
+[ERROR] 2021-05-28 22:12:34,905 com.sparkx.service.RecordService addRecord - ERROR: insert or update on table "record" violates foreign key constraint "record_queueid_fkey"
+  Detail: Key (queueid)=(0) is not present in table "queue".
+[INFO] 2021-05-28 22:30:43,889 com.sparkx.service.HospitalService getNearestHospitalBed - No beds are available

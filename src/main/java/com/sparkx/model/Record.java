@@ -11,7 +11,7 @@ public class Record {
     private Date regDate;
     private Date admittedDate;
     private Date dischargedDate;
-    private int queueId;
+    private UUID queueId;
 
     public UUID getPatientId() {
         return patientId;
@@ -69,11 +69,19 @@ public class Record {
         this.dischargedDate = dischargedDate;
     }
 
-    public int getQueueId() {
+    public UUID getQueueId() {
         return queueId;
     }
 
-    public void setQueueId(int queueId) {
+    public void setQueueId(UUID queueId) {
         this.queueId = queueId;
+    }
+
+    @Override
+    public String toString() {
+        return  "patientId: " + patientId + ", serialNumber: " + serialNumber+
+                ", bedId: " + bedId + ", hospitalId: " + hospitalId + ", regDate: " + regDate +
+                ", admittedDate: " + admittedDate + ", dischargedDate: " + dischargedDate +
+                ", queueId: " + queueId;
     }
 }

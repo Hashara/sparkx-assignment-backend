@@ -22,8 +22,6 @@ public class Controller extends HttpServlet {
         } catch (IOException e) {
             e.printStackTrace();
         }
-//        JsonObject json = new JsonObject();
-//        json.addProperty("Data", data);
         JsonParser parser = new JsonParser();
         JsonElement jsonElement = parser.parse(data);
         JsonObject json = jsonElement.getAsJsonObject();

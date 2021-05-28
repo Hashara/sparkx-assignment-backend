@@ -2,6 +2,7 @@ package com.sparkx.service;
 
 import com.sparkx.model.Bed;
 import com.sparkx.model.Queue;
+import com.sparkx.util.Message;
 import com.sparkx.util.Query;
 import com.sparkx.config.Config;
 import com.sparkx.core.Database;
@@ -93,11 +94,13 @@ public class HospitalService {
             return bedList.get(0);
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage());
+        }catch (IndexOutOfBoundsException e){
+            logger.info(Message.NO_BEDS_AVAILABLE);
         }
         return null;
     }
 
-    public Queue getQueue(){
+  /*  public Queue getQueue(){
         try(Connection connection = Database.getConnection();
         Statement getQueueNumber = connection.createStatement();
         PreparedStatement statement = connection.prepareStatement(Query.QUEUE_CREATE)) {
@@ -105,7 +108,7 @@ public class HospitalService {
            ResultSet queueDetails = getQueueNumber.executeQuery(Query.QUEUE_COUNT);
            Queue queue = new Queue();
            while (queueDetails.next()){
-               queue.setQueueId(queueDetails.getInt("currentId") + 1 );
+               queue.setQueueId(queueDetails.get("currentId") + 1 );
                return queue;
            }
 
@@ -113,7 +116,7 @@ public class HospitalService {
             logger.error(throwables.getMessage());
         }
         return null;
-    }
+    }*/
 
 
     private List<Hospital> mapResultSetToHospitalList(ResultSet resultSet) throws SQLException {

@@ -35,7 +35,7 @@ public class Query {
     public static final String BED_NEAREST = "SELECT bedid, bed.hospitalid, status, name, district, location_x, location_y,power((location_x - ?),2) + power((location_y - ?),2) AS distance\n" +
             "\tFROM " + BED_TABLE + " JOIN " + HOSPITAL_TABLE +  " ON bed.hospitalid = hospital.hospitalid WHERE status = 'available' ORDER BY distance LIMIT 1";
     public static final String BED_BY_HOSPITAL_ID = BED_ALL + " WHERE hospitalid=?";
-    public static final String BED_UPDATE_STATUS =  "UPDATE "+ BED_TABLE + " status=? WHERE bedid=? AND hospitalid=?";
+    public static final String BED_UPDATE_STATUS =  "UPDATE "+ BED_TABLE + " SET status=?::statustype WHERE bedid=? AND hospitalid=?";
 
     /* queue queries */
     public static final String QUEUE_CREATE = "INSERT INTO " + QUEUE_TABLE + "(queueid) VALUES (?)";
@@ -43,7 +43,7 @@ public class Query {
     public static final String QUEUE_COUNT = "SELECT MAX(queueid) AS currentId FROM " + QUEUE_TABLE;
 
     /* record queries */
-    public static final String RECORD_CREATE = "INSERT INTO " + RECORD_TABLE + " patientid, serialnumber, bedid, hospitalid, regdate, admitteddate, dischargeddate, queueid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    public static final String RECORD_CREATE = "INSERT INTO " + RECORD_TABLE + " (patientid, serialnumber, bedid, hospitalid, regdate, admitteddate, dischargeddate, queueid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     public static final String RECORD_UPDATE_ADMITTED ="UPDATE " + RECORD_TABLE + " SET bedid=?, hospitalid=?, admitteddate=? WHERE serialnumber = ?";
     public static final String RECORD_UPDATE_DISCHARGED ="UPDATE " + RECORD_TABLE + " SET dischargeddatee=? WHERE serialnumber = ?";
     public static final String RECORD_BY_PATIENT_ID = "SELECT serialnumber, bedid, hospitalid, regdate, admitteddate, dischargeddate, queueid FROM " + RECORD_TABLE + " WHERE patientid = ?";
