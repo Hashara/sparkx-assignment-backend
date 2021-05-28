@@ -15,17 +15,17 @@ public class RecordService {
 
     public boolean createRecord (Record record){
         try(Connection connection =  Database.getConnection();
-            PreparedStatement statement = connection.prepareStatement(Query.RECORD_CREATE)) {
+            PreparedStatement addRecord = connection.prepareStatement(Query.RECORD_CREATE)) {
 
 //            patientid, serialnumber, bedid, hospitalid, regdate, admitteddate, dischargeddate, queueid
-            statement.setString(1,record.getPatientId());
-            statement.setString(2,record.getSerialNumber());
-            statement.setString(3, record.getBedId());
-            statement.setString(4, record.getHospitalId());
-            statement.setDate(5, (Date) record.getRegDate());
-            statement.setDate(6, (Date) record.getAdmittedDate());
-            statement.setDate(7, (Date) record.getDischargedDate());
-            statement.setInt(8,record.getQueueId());
+            addRecord.setString(1,record.getPatientId());
+            addRecord.setString(2,record.getSerialNumber());
+            addRecord.setString(3, record.getBedId());
+            addRecord.setString(4, record.getHospitalId());
+            addRecord.setDate(5, (Date) record.getRegDate());
+            addRecord.setDate(6, (Date) record.getAdmittedDate());
+            addRecord.setDate(7, (Date) record.getDischargedDate());
+            addRecord.setInt(8,record.getQueueId());
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage());
         }

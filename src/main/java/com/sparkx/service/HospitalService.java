@@ -104,9 +104,7 @@ public class HospitalService {
            ResultSet queueDetails = getQueueNumber.executeQuery(Query.QUEUE_COUNT);
            Queue queue = new Queue();
            while (queueDetails.next()){
-               queue.setQueueId(queueDetails.getInt("currentId"));
-               System.out.println(queue.getQueueId());
-               System.out.println(queue);
+               queue.setQueueId(queueDetails.getInt("currentId") + 1 );
                return queue;
            }
 

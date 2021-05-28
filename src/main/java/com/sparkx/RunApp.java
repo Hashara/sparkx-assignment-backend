@@ -1,5 +1,7 @@
 package com.sparkx;
 
+import com.sparkx.service.HospitalService;
+import com.sparkx.util.DataInsert;
 import com.sparkx.util.Util;
 import com.sparkx.model.Patient;
 import com.sparkx.model.Person;
@@ -52,25 +54,29 @@ public class RunApp {
         }*/
 
 
-        Person person = new Person();
-        person.setUserId("130");
-        person.setFirst_name("patient");
-        person.setLast_name("St7");
-        person.setEmail("testPatien@test.com");
-        person.setPassword(new Util().hashPassword("hello1"));
-        person.setRole(RoleType.Patient);
+//        Person person = new Person();
+//        person.setUserId("130");
+//        person.setFirst_name("patient");
+//        person.setLast_name("St7");
+//        person.setEmail("testPatien@test.com");
+//        person.setPassword(new Util().hashPassword("hello1"));
+//        person.setRole(RoleType.Patient);
+//
+//        Patient p = new Patient();
+//        p.setPatientId("130");
+//        p.setBirthDate(new Date(2001-12-20));
+//        p.setContact("0712354584");
+//        p.setGender(GenderType.female);
+//        p.setDistrict("District1");
+//        p.setLocation_x(7);
+//        p.setLocation_y(9);
+//
+//        new PatientService().addPatient(person,p);
 
-        Patient p = new Patient();
-        p.setPatientId("130");
-        p.setBirthDate(new Date(2001-12-20));
-        p.setContact("0712354584");
-        p.setGender(GenderType.female);
-        p.setDistrict("District1");
-        p.setLocation_x(7);
-        p.setLocation_y(9);
 
-        new PatientService().addPatient(person,p);
-//        new Hospital().save();
+//        new HospitalService().getNearestHospitalBed(16,3);
+        new HospitalService().getQueue();
+//        new DataInsert().insert();
        /* int serverPort = 8000;
         HttpServer server = HttpServer.create(new InetSocketAddress(serverPort), 0);
         server.createContext("/api/hello", (exchange -> {
