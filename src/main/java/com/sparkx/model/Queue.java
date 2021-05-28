@@ -1,10 +1,10 @@
 package com.sparkx.model;
 
-import com.sparkx.model.Types.StatusType;
+import java.sql.Timestamp;
 
 public class Queue {
     private int queueId;
-    private StatusType status;
+    private Timestamp createdTIme;
 
 
     public int getQueueId() {
@@ -15,11 +15,16 @@ public class Queue {
         this.queueId = queueId;
     }
 
-    public StatusType getStatus() {
-        return status;
+    public Timestamp getCreatedTIme() {
+        return createdTIme;
     }
 
-    public void setStatus(StatusType status) {
-        this.status = status;
+    public void setCreatedTIme(Timestamp createdTIme) {
+        this.createdTIme = createdTIme;
+    }
+
+    @Override
+    public String toString() {
+        return  "queueId: " + queueId  + ", createdTime: " + createdTIme;
     }
 }

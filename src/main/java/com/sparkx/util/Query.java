@@ -32,12 +32,15 @@ public class Query {
     public static final String BEDS_CREATE = "INSERT INTO " + BED_TABLE +" (bedid, hospitalid, status) VALUES (1, ?, ?::statusType),(2, ?, ?::statusType),(3, ?, ?::statusType),(4, ?, ?::statusType),(5, ?, ?::statusType),(6, ?, ?::statusType),(7, ?, ?::statusType),(8, ?, ?::statusType),(9, ?, ?::statusType),(10, ?, ?::statusType)";
     public static final String BED_ALL = "SELECT bedid, hospitalid, status FROM " + BED_TABLE;
     public static final String BED_BY_STATUS = BED_ALL + " WHERE status= ?";
+    public static final String BED_NEAREST = "SELECT bedid, bed.hospitalid, status, name, district, location_x, location_y,power((location_x - ?),2) + power((location_y - ?),2) AS distance\n" +
+            "\tFROM " + BED_TABLE + " JOIN " + HOSPITAL_TABLE +  " ON bed.hospitalid = hospital.hospitalid WHERE status = 'available' ORDER BY distance LIMIT 1";
     public static final String BED_BY_HOSPITAL_ID = BED_ALL + " WHERE hospitalid=?";
     public static final String BED_UPDATE_STATUS =  "UPDATE "+ BED_TABLE + " status=? WHERE bedid=? AND hospitalid=?";
 
     /* queue queries */
-    public static final String QUEUE_CREATE = "INSERT INTO" + QUEUE_TABLE + "(queueid, status) VALUES (?, ?)";
-    public static final String QUEUE_UPDATE_STATUS = "UPDATE " + QUEUE_TABLE +" SET  status=? WHERE queueid=?";
+    public static final String QUEUE_CREATE = "INSERT INTO " + QUEUE_TABLE + "(queueid) VALUES (?)";
+    public static final String QUEUE_DELETE = "DELETE FROM " + QUEUE_TABLE +" WHERE queueid=?";
+    public static final String QUEUE_COUNT = "SELECT MAX(queueid) AS currentId FROM " + QUEUE_TABLE;
 
     /* record queries */
     public static final String RECORD_CREATE = "INSERT INTO " + RECORD_TABLE + " patientid, serialnumber, bedid, hospitalid, regdate, admitteddate, dischargeddate, queueid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";

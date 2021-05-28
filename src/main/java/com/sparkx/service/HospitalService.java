@@ -1,5 +1,7 @@
 package com.sparkx.service;
 
+import com.sparkx.model.Bed;
+import com.sparkx.model.Queue;
 import com.sparkx.util.Query;
 import com.sparkx.config.Config;
 import com.sparkx.core.Database;
@@ -78,6 +80,41 @@ public class HospitalService {
 
     }
 
+    public Bed getNearestHospitalBed(int locationX, int locationY){
+        try(Connection connection = Database.getConnection();
+        PreparedStatement statement = connection.prepareStatement(Query.BED_NEAREST)) {
+            List<Bed> bedList;
+
+            statement.setInt(1,locationX);
+            statement.setInt(2,locationY);
+            ResultSet resultSet = statement.executeQuery();
+            bedList = mapResultSetToBedList(resultSet);
+            return bedList.get(0);
+        } catch (SQLException throwables) {
+            logger.error(throwables.getMessage());
+        }
+        return null;
+    }
+
+    public Queue getQueue(){
+        try(Connection connection = Database.getConnection();
+        Statement getQueueNumber = connection.createStatement();
+        PreparedStatement statement = connection.prepareStatement(Query.QUEUE_CREATE)) {
+
+           ResultSet queueDetails = getQueueNumber.executeQuery(Query.QUEUE_COUNT);
+           Queue queue = new Queue();
+           while (queueDetails.next()){
+               queue.setQueueId(queueDetails.getInt("currentId") + 1 );
+               return queue;
+           }
+
+        } catch (SQLException throwables) {
+            logger.error(throwables.getMessage());
+        }
+        return null;
+    }
+
+
     private List<Hospital> mapResultSetToHospitalList(ResultSet resultSet) throws SQLException {
         List<Hospital> hospitalList = new ArrayList<>();
 
@@ -92,6 +129,21 @@ public class HospitalService {
             hospitalList.add(h);
         }
         return hospitalList;
+    }
+
+
+    private List<Bed> mapResultSetToBedList(ResultSet resultSet) throws SQLException {
+        List<Bed> bedList = new ArrayList<>();
+
+        while (resultSet.next()){
+            Bed bed = new Bed();
+            bed.setBedId(resultSet.getString("bedid"));
+            bed.setHospitalId(resultSet.getString("hospitalid"));
+            bed.setStatus(StatusType.valueOf(resultSet.getString("status")));
+            bedList.add(bed);
+            System.out.println(bed);
+        }
+        return bedList;
     }
 
 }

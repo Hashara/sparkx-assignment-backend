@@ -31,4 +31,9 @@ public class Bed {
     public void setStatus(StatusType status) {
         this.status = status;
     }
+
+    @Override
+    public String toString() {
+        return "bedId: " + bedId + " ,hospitalId: " + hospitalId + " ,status: " + status;
+    }
 }

@@ -4,7 +4,7 @@ import com.sparkx.model.Types.GenderType;
 
 import java.sql.Date;
 
-public class Patient {
+public class Patient extends Person{
     private String patientId;
     private String district;
     private int location_x;
@@ -19,6 +19,7 @@ public class Patient {
 
     public void setPatientId(String patientId) {
         this.patientId = patientId;
+        setUserId(patientId);
     }
 
     public String getDistrict() {
@@ -49,8 +50,8 @@ public class Patient {
         return gender;
     }
 
-    public void setGender(GenderType gender) {
-        this.gender = gender;
+    public void setGender(String gender) {
+        this.gender = GenderType.valueOf(gender);
     }
 
     public String getContact() {
