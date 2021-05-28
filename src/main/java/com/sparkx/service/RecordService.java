@@ -13,7 +13,10 @@ import java.sql.SQLException;
 public class RecordService {
     Logger logger = Logger.getLogger(RecordService.class);
 
-    public boolean createRecord (Record record){
+//    public Record createRecord(){
+//
+//    }
+    public boolean addRecord (Record record){
         try(Connection connection =  Database.getConnection();
             PreparedStatement addRecord = connection.prepareStatement(Query.RECORD_CREATE)) {
 

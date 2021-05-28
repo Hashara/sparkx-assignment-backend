@@ -1,22 +1,25 @@
 package com.sparkx.service;
 
+import com.sparkx.Exception.NotCreatedException;
+import com.sparkx.Exception.NotFoundException;
+import com.sparkx.model.*;
 import com.sparkx.model.Types.RoleType;
+import com.sparkx.util.Message;
 import com.sparkx.util.Query;
 import com.sparkx.core.Database;
-import com.sparkx.model.Patient;
-import com.sparkx.model.Person;
 import com.sparkx.util.Util;
 import org.apache.log4j.Logger;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.InputMismatchException;
+import java.util.List;
+import java.util.UUID;
 
 public class PatientService{
     Logger logger = Logger.getLogger(PatientService.class);
 
-    public boolean addPatient( Patient patient) throws SQLException {
+    public void addPatient( Patient patient) throws  NotCreatedException {
 
         if (patient.getPatientId() == null){
             patient.setPatientId(Util.getUUID());
@@ -49,13 +52,60 @@ public class PatientService{
 
             createPatient.execute();
             connection.commit();
-            return true;
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage());
-            throw throwables;
+            throw new NotCreatedException(throwables.getMessage());
         }
-//        return false;
     }
 
 
+//    public void addRecord(Patient patient){
+//        Record record = new Record();
+//        record.setPatientId(patient.getPatientId());
+//        Bed bed = new HospitalService().getNearestHospitalBed()
+////        record.
+//
+//
+//    }
+
+    public Patient getPatientById(String patientId) throws NotFoundException, InputMismatchException{
+        try(Connection connection = Database.getConnection();
+        PreparedStatement statement = connection.prepareStatement(Query.PATIENT_BY_PATIENT_ID)) {
+
+            statement.setString(1, patientId);
+            ResultSet resultSet = statement.executeQuery();
+
+            Patient patient= mapResultSetToPatientList(resultSet).get(0);
+
+            return patient;
+        } catch (SQLException throwables) {
+            logger.error(throwables.getMessage());
+            throw new InputMismatchException(throwables.getMessage());
+        }catch (IndexOutOfBoundsException e){
+            logger.error(Message.PATIENT_NOT_FOUND);
+            throw new NotFoundException(Message.PATIENT_NOT_FOUND);
+        }
+    }
+
+
+    private List<Patient> mapResultSetToPatientList(ResultSet resultSet) throws SQLException {
+        List<Patient> patientList = new ArrayList<>();
+
+        //patientid, district, location_x, location_y, gender, contact, birthdate, email, first_name,last_name
+        while ( resultSet.next() ) {
+            Patient p = new Patient();
+            p.setPatientId((UUID) resultSet.getObject("patientid"));
+            p.setDistrict(resultSet.getString("district"));
+            p.setLocation_x(resultSet.getInt("location_x"));
+            p.setLocation_y(resultSet.getInt("location_y"));
+            p.setGender(resultSet.getString("gender"));
+            p.setContact(resultSet.getString("contact"));
+            p.setBirthDate(resultSet.getDate("birthdate"));
+            p.setEmail(resultSet.getString("email"));
+            p.setFirst_name(resultSet.getString("first_name"));
+            p.setLast_name(resultSet.getString("last_name"));
+            patientList.add(p);
+        }
+        return patientList;
+    }
 }

@@ -1,6 +1,8 @@
 package com.sparkx.controller;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -20,8 +22,12 @@ public class Controller extends HttpServlet {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        JsonObject json = new JsonObject();
-        json.addProperty("Data", data);
+//        JsonObject json = new JsonObject();
+//        json.addProperty("Data", data);
+        JsonParser parser = new JsonParser();
+        JsonElement jsonElement = parser.parse(data);
+        JsonObject json = jsonElement.getAsJsonObject();
+
         writer.print(json.toString());
         writer.flush();
     }
@@ -37,8 +43,15 @@ public class Controller extends HttpServlet {
         return jb.toString();
     }
 
+    public JsonObject getJsonObject(HttpServletRequest req) throws IOException {
+        String jsonResponse = getjsonRequest(req);
+        JsonParser parser = new JsonParser();
+        JsonElement jsonElement = parser.parse(jsonResponse);
+        return jsonElement.getAsJsonObject();
+    }
+
     public void response(String message, int code, HttpServletResponse resp)  {
         resp.setStatus(code);
-        sendResponse("{'message':" + message + "}",resp);
+        sendResponse("{\"message\": \"" + message + "\"}",resp);
     }
 }

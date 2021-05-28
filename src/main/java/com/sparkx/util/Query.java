@@ -24,8 +24,8 @@ public class Query {
 
     /* patient queries */
     public static final String PATIENT_CREATE = "INSERT INTO " + PATIENT_TABLE + " ( patientid, district, location_x, location_y, gender, contact, birthdate) VALUES (?, ?, ?, ?, ?::genderTypes, ?, ?)";
-    public static final String PATIENT_ALL = "SELECT patientid, district, location_x, location_y, gender, contact, birthdate FROM " + PATIENT_TABLE;
-    public static final String PATIENT_BY_PATIENT_ID = PATIENT_ALL + " WHERE patientid = ?";
+    public static final String PATIENT_ALL = "SELECT patientid, district, location_x, location_y, gender, contact, birthdate, email, first_name,last_name FROM " + PATIENT_TABLE + " join " + PERSON_TABLE + " on " + PATIENT_TABLE + ".patientId = " + PERSON_TABLE + ".userId" ;
+    public static final String PATIENT_BY_PATIENT_ID = PATIENT_ALL + " WHERE patientid = ?::uuid";
     public static final String PATIENT_BY_USER_ID = PATIENT_ALL + " WHERE userid = ?";
 
     /* bed queries */

@@ -1,1 +1,2 @@
-[ERROR] 2021-05-25 12:58:41,256 com.sparkx.service.HospitalService getQueue - The column name nnn was not found in this ResultSet.
+[ERROR] 2021-05-28 16:05:35,209 com.sparkx.service.PatientService getPatientById - ERROR: invalid input syntax for type uuid: "-70e1-45c4-9415-211074117f6c"
+[ERROR] 2021-05-28 16:40:02,287 com.sparkx.service.PatientService getPatientById - Patient not found
