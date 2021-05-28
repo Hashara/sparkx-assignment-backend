@@ -3,9 +3,10 @@ package com.sparkx.model;
 import com.sparkx.model.Types.GenderType;
 
 import java.sql.Date;
+import java.util.UUID;
 
 public class Patient extends Person{
-    private String patientId;
+    private UUID patientId;
     private String district;
     private int location_x;
     private int location_y;
@@ -13,11 +14,11 @@ public class Patient extends Person{
     private String contact;
     private Date birthDate;
 
-    public String getPatientId() {
+    public UUID getPatientId() {
         return patientId;
     }
 
-    public void setPatientId(String patientId) {
+    public void setPatientId(UUID patientId) {
         this.patientId = patientId;
         setUserId(patientId);
     }

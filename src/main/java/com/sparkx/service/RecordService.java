@@ -18,10 +18,10 @@ public class RecordService {
             PreparedStatement addRecord = connection.prepareStatement(Query.RECORD_CREATE)) {
 
 //            patientid, serialnumber, bedid, hospitalid, regdate, admitteddate, dischargeddate, queueid
-            addRecord.setString(1,record.getPatientId());
-            addRecord.setString(2,record.getSerialNumber());
+            addRecord.setObject(1,record.getPatientId());
+            addRecord.setObject(2,record.getSerialNumber());
             addRecord.setString(3, record.getBedId());
-            addRecord.setString(4, record.getHospitalId());
+            addRecord.setObject(4, record.getHospitalId());
             addRecord.setDate(5, (Date) record.getRegDate());
             addRecord.setDate(6, (Date) record.getAdmittedDate());
             addRecord.setDate(7, (Date) record.getDischargedDate());

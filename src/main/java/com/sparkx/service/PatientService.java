@@ -18,8 +18,8 @@ public class PatientService{
 
     public boolean addPatient( Patient patient) throws SQLException {
 
-        if (patient.getPatientId().isEmpty()){
-            patient.setPatientId(String.valueOf(Util.getUUID()));
+        if (patient.getPatientId() == null){
+            patient.setPatientId(Util.getUUID());
         }
 
         try (Connection connection = Database.getConnection();
@@ -28,18 +28,18 @@ public class PatientService{
 
             connection.setAutoCommit(false);
 
-            createPerson.setString(1, patient.getUserId());
+            createPerson.setObject(1, patient.getUserId());
             createPerson.setString(2, patient.getEmail());
             createPerson.setString(3, patient.getPassword());
             createPerson.setString(4, patient.getFirst_name());
             createPerson.setString(5, patient.getLast_name());
-            createPerson.setString(6, null);
+            createPerson.setObject(6, null);
             createPerson.setString(7, String.valueOf(RoleType.Patient));
 
             createPerson.execute();
 
             //patientid, district, location_x, location_y, gender, contact, birthdate
-            createPatient.setString(1, patient.getPatientId());
+            createPatient.setObject(1, patient.getPatientId());
             createPatient.setString(2, patient.getDistrict());
             createPatient.setInt(3,patient.getLocation_x());
             createPatient.setInt(4,patient.getLocation_y());

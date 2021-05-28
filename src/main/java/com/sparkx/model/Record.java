@@ -1,31 +1,40 @@
 package com.sparkx.model;
 
 import java.util.Date;
+import java.util.UUID;
 
 public class Record {
-    private  String patientId;
-    private String serialNumber;
+    private UUID patientId;
+    private UUID serialNumber;
     private String bedId;
-    private String hospitalId;
+    private UUID hospitalId;
     private Date regDate;
     private Date admittedDate;
     private Date dischargedDate;
     private int queueId;
 
-    public String getPatientId() {
+    public UUID getPatientId() {
         return patientId;
     }
 
-    public void setPatientId(String patientId) {
+    public void setPatientId(UUID patientId) {
         this.patientId = patientId;
     }
 
-    public String getSerialNumber() {
+    public UUID getSerialNumber() {
         return serialNumber;
     }
 
-    public void setSerialNumber(String serialNumber) {
+    public void setSerialNumber(UUID serialNumber) {
         this.serialNumber = serialNumber;
+    }
+
+    public UUID getHospitalId() {
+        return hospitalId;
+    }
+
+    public void setHospitalId(UUID hospitalId) {
+        this.hospitalId = hospitalId;
     }
 
     public String getBedId() {
@@ -34,14 +43,6 @@ public class Record {
 
     public void setBedId(String bedId) {
         this.bedId = bedId;
-    }
-
-    public String getHospitalId() {
-        return hospitalId;
-    }
-
-    public void setHospitalId(String hospitalId) {
-        this.hospitalId = hospitalId;
     }
 
     public Date getRegDate() {

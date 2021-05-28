@@ -60,7 +60,7 @@ public class PatientController extends Controller {
                 .setDateFormat("yyyy-mm-dd").create();
         Patient patient = gson.fromJson(jsonResponse, Patient.class);
 
-        patient.setPatientId(Util.hashPassword(patient.getPassword()));
+        patient.setPassword(Util.hashPassword(patient.getPassword()));
         patientService.addPatient(patient);
 
         response(Messages.REGISTER_SUCCESS, HttpServletResponse.SC_CREATED, resp);

@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class PersonService {
     Logger logger = Logger.getLogger(PersonService.class);
@@ -21,12 +22,12 @@ public class PersonService {
              PreparedStatement createPerson = connection.prepareStatement(Query.PERSON_CREATE)) {
 
             //userid, email, password, first_name, last_name, hospitalid, role
-            createPerson.setString(1, person.getUserId());
+            createPerson.setObject(1, person.getUserId());
             createPerson.setString(2, person.getEmail());
             createPerson.setString(3, person.getPassword());
             createPerson.setString(4, person.getFirst_name());
             createPerson.setString(5, person.getLast_name());
-            createPerson.setString(6, person.getHospitalId());
+            createPerson.setObject(6, person.getHospitalId());
             createPerson.setString(7, String.valueOf(person.getRole()));
 
             createPerson.execute();
@@ -76,11 +77,11 @@ public class PersonService {
                 personList = new ArrayList<>();
             }
             Person person = new Person();
-            person.setUserId(resultSet.getString("userid"));
+            person.setUserId((UUID) resultSet.getObject("userid"));
             person.setEmail(resultSet.getString("email"));
             person.setFirst_name(resultSet.getString("first_name"));
             person.setLast_name(resultSet.getString("last_name"));
-            person.setHospitalId(resultSet.getString("hospitalid"));
+            person.setHospitalId((UUID)resultSet.getObject("hospitalid"));
             person.setRole(RoleType.valueOf(resultSet.getString("role")));
             personList.add(person);
         }

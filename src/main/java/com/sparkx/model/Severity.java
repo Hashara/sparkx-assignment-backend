@@ -3,11 +3,12 @@ package com.sparkx.model;
 import com.sparkx.model.Types.SeverityLevel;
 
 import java.util.Date;
+import java.util.UUID;
 
 public class Severity {
     private String severityId;
     private SeverityLevel level;
-    private String doctorId;
+    private UUID doctorId;
     private Date markedDate;
     private String serialNumber;
 
@@ -27,11 +28,11 @@ public class Severity {
         this.level = level;
     }
 
-    public String getDoctorId() {
+    public UUID getDoctorId() {
         return doctorId;
     }
 
-    public void setDoctorId(String doctorId) {
+    public void setDoctorId(UUID doctorId) {
         this.doctorId = doctorId;
     }
 

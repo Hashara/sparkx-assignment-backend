@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class HospitalService {
     Logger logger = Logger.getLogger(HospitalService.class);
@@ -24,7 +25,7 @@ public class HospitalService {
 
             connection.setAutoCommit(false);
             //(hospitalid, name, district, location_x, location_y)
-            createHospital.setString(1, hospital.getHospitalId());
+            createHospital.setObject(1, hospital.getHospitalId());
             createHospital.setString(2, hospital.getName());
             createHospital.setString(3, hospital.getDistrict());
             createHospital.setInt(4, hospital.getLocation_x());
@@ -33,7 +34,7 @@ public class HospitalService {
             createHospital.execute();
             for (int i = 0; i < Config.BEDS_PER_HOSPITAL * 2; i++) {
                 if ((i + 1) % 2 == 1) {
-                    createBeds.setString(i + 1, hospital.getHospitalId());
+                    createBeds.setObject(i + 1, hospital.getHospitalId());
                 } else {
                     createBeds.setString(i + 1, String.valueOf(StatusType.available));
                 }
@@ -120,7 +121,7 @@ public class HospitalService {
 
         while ( resultSet.next() ) {
             Hospital h = new Hospital();
-            h.setHospitalId(resultSet.getString("hospitalid"));
+            h.setHospitalId((UUID) resultSet.getObject("hospitalid"));
             h.setName(resultSet.getString("name"));
             h.setDistrict(resultSet.getString("district"));
             h.setLocation_x(resultSet.getInt("location_x"));
@@ -138,7 +139,7 @@ public class HospitalService {
         while (resultSet.next()){
             Bed bed = new Bed();
             bed.setBedId(resultSet.getString("bedid"));
-            bed.setHospitalId(resultSet.getString("hospitalid"));
+            bed.setHospitalId((UUID) resultSet.getObject("hospitalid"));
             bed.setStatus(StatusType.valueOf(resultSet.getString("status")));
             bedList.add(bed);
             System.out.println(bed);

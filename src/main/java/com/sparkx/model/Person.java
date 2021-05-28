@@ -2,22 +2,17 @@ package com.sparkx.model;
 
 import com.sparkx.model.Types.RoleType;
 
+import java.util.UUID;
+
 public class Person {
-    private String userId;
+    private UUID userId;
     private String email;
     private String password;
     private String first_name;
     private String last_name;
-    private String hospitalId;
+    private UUID hospitalId;
     private RoleType role;
 
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
 
     public String getEmail() {
         return email;
@@ -51,11 +46,19 @@ public class Person {
         this.last_name = last_name;
     }
 
-    public String getHospitalId() {
+    public UUID getUserId() {
+        return userId;
+    }
+
+    public void setUserId(UUID userId) {
+        this.userId = userId;
+    }
+
+    public UUID getHospitalId() {
         return hospitalId;
     }
 
-    public void setHospitalId(String hospitalId) {
+    public void setHospitalId(UUID hospitalId) {
         this.hospitalId = hospitalId;
     }
 

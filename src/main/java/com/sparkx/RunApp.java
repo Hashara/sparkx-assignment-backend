@@ -75,8 +75,8 @@ public class RunApp {
 
 
 //        new HospitalService().getNearestHospitalBed(16,3);
-        new HospitalService().getQueue();
-//        new DataInsert().insert();
+//        new HospitalService().getQueue();
+        new DataInsert().insert();
        /* int serverPort = 8000;
         HttpServer server = HttpServer.create(new InetSocketAddress(serverPort), 0);
         server.createContext("/api/hello", (exchange -> {
