@@ -12,4 +12,5 @@ public class Message {
     public static final String RECORD_NOT_CREATED = "Record not created";
     public static final String QUEUE_NOT_FOUND = "Queue not found";
     public static final String RECORD_NOT_FOUND = "Record Not found";
+    public static final String PERSON_NOT_FOUND = "Person not found";
 }

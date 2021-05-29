@@ -1,5 +1,7 @@
 package com.sparkx.service;
 
+import com.sparkx.Exception.NotFoundException;
+import com.sparkx.util.Message;
 import com.sparkx.util.Query;
 import com.sparkx.core.Database;
 import com.sparkx.model.Person;
@@ -40,19 +42,21 @@ public class PersonService {
 
     }
 
-    public Person getUserById(String userId) {
+    public Person getPersonById(String userId) throws Exception{
         Person person = null;
         try (Connection connection = Database.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(Query.PERSON_BY_ID)) {
             preparedStatement.setString(1, userId);
 
             ResultSet resultSet = preparedStatement.executeQuery();
-            person = mapResultSetToPerson(resultSet).get(0);
-            return person;
+            return mapResultSetToPerson(resultSet).get(0);
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage());
+            throw  throwables;
+        }catch (IndexOutOfBoundsException e){
+            logger.error(Message.PERSON_NOT_FOUND);
+            throw new NotFoundException(Message.PATIENT_NOT_FOUND);
         }
-        return person;
     }
 
     public List<Person> getUsersByRole(RoleType roleType) {

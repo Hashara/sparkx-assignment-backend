@@ -14,7 +14,7 @@ import java.io.PrintWriter;
 
 public class Controller extends HttpServlet {
 
-    public void sendResponse(String data, HttpServletResponse resp, @Nullable Integer code) {
+    public void sendResponse(String data, HttpServletResponse resp, Integer code) {
         if (code != null) {
             resp.setStatus(code);
         }
@@ -50,7 +50,7 @@ public class Controller extends HttpServlet {
         return jsonElement.getAsJsonObject();
     }
 
-    public void sendMessageResponse(String message, HttpServletResponse resp, @Nullable int code) {
+    public void sendMessageResponse(String message, HttpServletResponse resp, int code) {
         sendResponse("{\"message\": \"" + message + "\"}", resp, code);
     }
 }

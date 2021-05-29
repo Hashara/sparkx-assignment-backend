@@ -1,22 +1,7 @@
 package com.sparkx;
 
-import com.google.gson.*;
 import com.sparkx.Exception.NotFoundException;
-import com.sparkx.model.Queue;
-import com.sparkx.model.Record;
-import com.sparkx.service.HospitalService;
-import com.sparkx.service.RecordService;
-import com.sparkx.util.DataInsert;
-import com.sparkx.util.Util;
-import com.sparkx.model.Patient;
-import com.sparkx.model.Person;
-import com.sparkx.model.Types.GenderType;
-import com.sparkx.model.Types.RoleType;
-import com.sparkx.service.PatientService;
-
-import java.sql.Date;
-import java.util.List;
-import java.util.UUID;
+import com.sparkx.service.PersonService;
 
 
 public class RunApp {
@@ -117,7 +102,7 @@ public class RunApp {
 
 //        System.out.println(new RecordService().getRecordsByPatientID("247d37a7-ac72-4063-a157-b790f39de283"));
 
-        String patientId = "247d37a7-ac72-4063-a157-b790f39de283";
+/*        String patientId = "247d37a7-ac72-4063-a157-b790f39de283";
         try {
             Patient patient = new PatientService().getPatientById(patientId);
         } catch (NotFoundException e) {
@@ -132,7 +117,35 @@ public class RunApp {
         JsonParser parser = new JsonParser();
         JsonElement jsonElement = parser.parse(gson.toJson(recordList));
         JsonArray json = jsonElement.getAsJsonArray();
-        System.out.println(jsonElement);
+        System.out.println(jsonElement);*/
+
+/*
+        String jsonResponse ="{" +
+                "    \"first_name\": \"MoH\",\n" +
+                "    \"last_name\": \"One\",\n" +
+                "    \"email\":\"moh1@gmail.com\",\n" +
+                "    \"password\":\"123456\",\n" +
+                "    \"role\":\"MoH\"\n" +
+                "}";
+        Gson gson = new GsonBuilder()
+                .setDateFormat("yyyy-mm-dd").create();
+        Person person = gson.fromJson(jsonResponse, Person.class);
+
+        person.setPassword(Util.hashPassword(person.getPassword()));
+        try {
+            person = new PersonService().createPerson(person);
+            System.out.println(person);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }*/
+
+        try {
+            System.out.println(new PersonService().getPersonById("e351f5a3-c655-4dac-a23f-222999099eea"));
+        } catch (NotFoundException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
        /* int serverPort = 8000;
 

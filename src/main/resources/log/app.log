@@ -5,3 +5,9 @@
 [INFO] 2021-05-29 09:51:01,057 com.sparkx.service.HospitalService getNearestHospitalBed - No beds are available
 [INFO] 2021-05-29 09:51:22,883 com.sparkx.service.HospitalService getNearestHospitalBed - No beds are available
 [INFO] 2021-05-29 09:51:59,840 com.sparkx.service.HospitalService getNearestHospitalBed - No beds are available
+[ERROR] 2021-05-29 21:42:02,925 com.sparkx.service.PersonService createPerson - ERROR: null value in column "userid" of relation "person" violates not-null constraint
+  Detail: Failing row contains (null, moh1@gmail.com, $2a$10$s8AzHKhlecf7pzrReSvfp.3H4rwr9zY6HDRweKnj7WAFpJk3uc8CG, MoH, One, null, MoH).
+[ERROR] 2021-05-29 22:11:16,934 com.sparkx.service.PatientService getPatientById - Patient not found
+[ERROR] 2021-05-29 22:12:54,724 com.sparkx.service.PersonService getPersonById - ERROR: operator does not exist: uuid = character varying
+  Hint: No operator matches the given name and argument types. You might need to add explicit type casts.
+  Position: 88
