@@ -19,7 +19,7 @@ import java.util.UUID;
 public class PatientService {
     Logger logger = Logger.getLogger(PatientService.class);
 
-    public void addPatient(Patient patient) throws NotCreatedException {
+    public Patient addPatient(Patient patient) throws NotCreatedException {
 
         if (patient.getPatientId() == null) {
             patient.setPatientId(Util.getUUID());
@@ -52,6 +52,8 @@ public class PatientService {
 
             createPatient.execute();
             connection.commit();
+            patient.setPassword(null);
+            return patient;
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage());
             throw new NotCreatedException(throwables.getMessage());
@@ -59,13 +61,13 @@ public class PatientService {
     }
 
 
-    public Record addRecord(Patient patient) throws Exception{
+    public Record addRecord(Patient patient) throws Exception {
         Record record = new Record();
         record.setPatientId(patient.getPatientId());
         record.setSerialNumber(Util.getUUID());
         HospitalService hospitalService = new HospitalService();
         Bed bed = hospitalService.getNearestHospitalBed(patient.getLocation_x(), patient.getLocation_y());
-        long millis=System.currentTimeMillis();
+        long millis = System.currentTimeMillis();
         record.setRegDate(new Date(millis));
         Queue queue = null;
 
@@ -80,12 +82,12 @@ public class PatientService {
 
         }
 
-        new RecordService().addRecord(record,queue,bed);
+        new RecordService().addRecord(record, queue, bed);
 
-        if (bed ==null){
+        if (bed == null) {
             try {
                 record.setQueueNumber(hospitalService.getQueueNumberByQueueId(queue.getQueueId()));
-            }catch (Exception e){
+            } catch (Exception e) {
                 logger.error(e.getMessage());
             }
         }

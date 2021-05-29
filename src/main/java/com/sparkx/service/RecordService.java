@@ -77,7 +77,7 @@ public class RecordService {
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage());
             throw throwables;
-        } catch (Exception e){
+        } catch (Exception e) {
             logger.error(e.getMessage());
             throw new NotFoundException(Message.RECORD_NOT_FOUND);
         }

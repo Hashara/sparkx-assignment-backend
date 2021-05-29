@@ -8,7 +8,6 @@ import com.sparkx.model.Patient;
 import com.sparkx.model.Record;
 import com.sparkx.service.PatientService;
 import com.sparkx.service.RecordService;
-import com.sparkx.util.Message;
 import com.sparkx.util.Util;
 import org.apache.log4j.Logger;
 
@@ -41,19 +40,17 @@ public class PatientController extends Controller {
                     getPatientById(req, resp);
                     break;
                 case "GET_ALL_RECORDS":
-                    getAllRecords(req,resp);
+                    getAllRecords(req, resp);
                     break;
                 case "GET_ACTIVE_RECORD":
-                    getActiveRecord(req,resp);
+                    getActiveRecord(req, resp);
                     break;
             }
         } catch (Exception e) {
             logger.error(e.getMessage());
-            response(e.getMessage(), HttpServletResponse.SC_INTERNAL_SERVER_ERROR, resp);
+            sendMessageResponse(e.getMessage(), resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
-
-
 
 
     @Override
@@ -71,7 +68,7 @@ public class PatientController extends Controller {
             }
         } catch (Exception e) {
             logger.error(e.getMessage());
-            response(e.getMessage(), HttpServletResponse.SC_INTERNAL_SERVER_ERROR, resp);
+            sendMessageResponse(e.getMessage(), resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -85,7 +82,7 @@ public class PatientController extends Controller {
         patient.setPassword(Util.hashPassword(patient.getPassword()));
         patientService.addPatient(patient);
 
-        response(Message.REGISTER_SUCCESS, HttpServletResponse.SC_CREATED, resp);
+        sendResponse(gson.toJson(patient), resp, HttpServletResponse.SC_CREATED);
     }
 
     private void getPatientById(HttpServletRequest req, HttpServletResponse resp) throws IOException, NotFoundException {
@@ -95,7 +92,7 @@ public class PatientController extends Controller {
         Gson gson = new GsonBuilder()
                 .setDateFormat("yyyy-MM-dd").create();
 
-        sendResponse(gson.toJson(patient), resp);
+        sendResponse(gson.toJson(patient), resp, HttpServletResponse.SC_OK);
     }
 
     private void createRecord(HttpServletRequest req, HttpServletResponse resp) throws Exception {
@@ -106,10 +103,10 @@ public class PatientController extends Controller {
 
         try {
             Record record = recordService.getActiveRecordByPatientID(patientId);
-            sendResponse(gson.toJson(record), resp);
+            sendResponse(gson.toJson(record), resp, HttpServletResponse.SC_OK);
         } catch (NotFoundException e) {
             Record record = patientService.addRecord(patient);
-            sendResponse(gson.toJson(record), resp);
+            sendResponse(gson.toJson(record), resp, HttpServletResponse.SC_OK);
         }
     }
 
@@ -121,7 +118,7 @@ public class PatientController extends Controller {
                 .setDateFormat("yyyy-MM-dd").create();
 
         List<Record> recordList = recordService.getRecordsByPatientID(patientId);
-        sendResponse(gson.toJson(recordList), resp);
+        sendResponse(gson.toJson(recordList), resp, HttpServletResponse.SC_OK);
     }
 
     private void getActiveRecord(HttpServletRequest req, HttpServletResponse resp) throws Exception {
@@ -132,10 +129,9 @@ public class PatientController extends Controller {
                 .setDateFormat("yyyy-MM-dd").create();
 
         Record record = recordService.getActiveRecordByPatientID(patientId);
-        sendResponse(gson.toJson(record), resp);
+        sendResponse(gson.toJson(record), resp, HttpServletResponse.SC_OK);
     }
 
     public void destroy() {
-
     }
 }

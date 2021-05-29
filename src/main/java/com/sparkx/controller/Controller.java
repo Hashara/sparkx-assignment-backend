@@ -3,6 +3,7 @@ package com.sparkx.controller;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.sun.istack.internal.Nullable;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -13,7 +14,10 @@ import java.io.PrintWriter;
 
 public class Controller extends HttpServlet {
 
-    public void sendResponse(String data, HttpServletResponse resp)  {
+    public void sendResponse(String data, HttpServletResponse resp, @Nullable Integer code) {
+        if (code != null) {
+            resp.setStatus(code);
+        }
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
         PrintWriter writer = null;
@@ -46,8 +50,7 @@ public class Controller extends HttpServlet {
         return jsonElement.getAsJsonObject();
     }
 
-    public void response(String message, int code, HttpServletResponse resp)  {
-        resp.setStatus(code);
-        sendResponse("{\"message\": \"" + message + "\"}",resp);
+    public void sendMessageResponse(String message, HttpServletResponse resp, @Nullable int code) {
+        sendResponse("{\"message\": \"" + message + "\"}", resp, code);
     }
 }
