@@ -12,6 +12,15 @@ public class Record {
     private Date admittedDate;
     private Date dischargedDate;
     private UUID queueId;
+    private int queueNumber;
+
+    public int getQueueNumber() {
+        return queueNumber;
+    }
+
+    public void setQueueNumber(int queueNumber) {
+        this.queueNumber = queueNumber;
+    }
 
     public UUID getPatientId() {
         return patientId;

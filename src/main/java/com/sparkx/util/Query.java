@@ -11,6 +11,8 @@ public class Query {
     public static final String RECORD_TABLE = "record";
     public static final String SEVERITY_TABLE = "severity";
 
+    public static final String QUEUE_VIEW = "queue_view";
+
     /* hospital queries */
     public static final String HOSPITAL_CREATE = "INSERT INTO " + HOSPITAL_TABLE + " (hospitalid, name, district, location_x, location_y) VALUES (?, ?, ?, ?, ?)";
     public static final String HOSPITAL_ALL = "SELECT hospitalid, name, district, location_x, location_y FROM " + HOSPITAL_TABLE;
@@ -42,11 +44,16 @@ public class Query {
     public static final String QUEUE_DELETE = "DELETE FROM " + QUEUE_TABLE +" WHERE queueid=?";
     public static final String QUEUE_COUNT = "SELECT MAX(queueid) AS currentId FROM " + QUEUE_TABLE;
 
+    /* queue view queries*/
+    public static final String QUEUE_BY_ID = "SELECT queue_number, queueid, created_timestamp, patientid, district, location_x, location_y,serialNumber\n" +
+            "\tFROM " + QUEUE_VIEW + " WHERE queueid = ?";
+    public static final String QUEUE_NO_BY_ID = "SELECT queue_number FROM " + QUEUE_VIEW +  " WHERE queueid = ?";
+
     /* record queries */
     public static final String RECORD_CREATE = "INSERT INTO " + RECORD_TABLE + " (patientid, serialnumber, bedid, hospitalid, regdate, admitteddate, dischargeddate, queueid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     public static final String RECORD_UPDATE_ADMITTED ="UPDATE " + RECORD_TABLE + " SET bedid=?, hospitalid=?, admitteddate=? WHERE serialnumber = ?";
     public static final String RECORD_UPDATE_DISCHARGED ="UPDATE " + RECORD_TABLE + " SET dischargeddatee=? WHERE serialnumber = ?";
-    public static final String RECORD_BY_PATIENT_ID = "SELECT serialnumber, bedid, hospitalid, regdate, admitteddate, dischargeddate, queueid FROM " + RECORD_TABLE + " WHERE patientid = ?";
+    public static final String RECORD_BY_PATIENT_ID = "SELECT serialnumber, bedid, hospitalid, regdate, admitteddate, dischargeddate, queueid FROM " + RECORD_TABLE + " WHERE patientid = ?::uuid";
     public static final String RECORD_BY_HOSPITAL = "SELECT patientid,serialnumber, bedid, regdate, admitteddate, dischargeddate FROM " + RECORD_TABLE + " WHERE hospitalid = ?";
 
     /* severity queries */

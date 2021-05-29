@@ -1,5 +1,6 @@
 package com.sparkx.service;
 
+import com.sparkx.Exception.NotFoundException;
 import com.sparkx.model.Bed;
 import com.sparkx.model.Queue;
 import com.sparkx.util.Message;
@@ -100,23 +101,23 @@ public class HospitalService {
         return null;
     }
 
-  /*  public Queue getQueue(){
+    public int getQueueNumberByQueueId(UUID queueID) throws Exception {
         try(Connection connection = Database.getConnection();
-        Statement getQueueNumber = connection.createStatement();
-        PreparedStatement statement = connection.prepareStatement(Query.QUEUE_CREATE)) {
+        PreparedStatement statement = connection.prepareStatement(Query.QUEUE_NO_BY_ID)) {
 
-           ResultSet queueDetails = getQueueNumber.executeQuery(Query.QUEUE_COUNT);
-           Queue queue = new Queue();
-           while (queueDetails.next()){
-               queue.setQueueId(queueDetails.get("currentId") + 1 );
-               return queue;
-           }
+            statement.setObject(1,queueID);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()){
+                return resultSet.getInt("queue_number");
+            }
 
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage());
+            throw throwables;
         }
-        return null;
-    }*/
+        throw new NotFoundException(Message.QUEUE_NOT_FOUND);
+    }
 
 
     private List<Hospital> mapResultSetToHospitalList(ResultSet resultSet) throws SQLException {

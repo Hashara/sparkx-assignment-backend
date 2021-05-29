@@ -77,9 +77,18 @@ public class PatientService {
             queue = new Queue();
             queue.setQueueId(Util.getUUID());
             record.setQueueId(queue.getQueueId());
+
         }
 
         new RecordService().addRecord(record,queue,bed);
+
+        if (bed ==null){
+            try {
+                record.setQueueNumber(hospitalService.getQueueNumberByQueueId(queue.getQueueId()));
+            }catch (Exception e){
+                logger.error(e.getMessage());
+            }
+        }
         return record;
     }
 

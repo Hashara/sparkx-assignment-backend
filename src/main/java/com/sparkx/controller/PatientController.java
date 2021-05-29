@@ -2,8 +2,6 @@ package com.sparkx.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.sparkx.Exception.NotCreatedException;
 import com.sparkx.Exception.NotFoundException;
 import com.sparkx.model.Patient;
@@ -39,9 +37,7 @@ public class PatientController extends Controller {
                     getPatientById(req, resp);
                     break;
 
-                case "PATIENT_RECORD":
-                    createRecord(req, resp);
-                    break;
+
             }
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -57,6 +53,9 @@ public class PatientController extends Controller {
             switch (cmd) {
                 case "REGISTER":
                     registerPatient(req, resp);
+                    break;
+                case "PATIENT_RECORD":
+                    createRecord(req, resp);
                     break;
             }
         } catch (Exception e) {
@@ -83,7 +82,7 @@ public class PatientController extends Controller {
         Patient patient = patientService.getPatientById(patientId);
 
         Gson gson = new GsonBuilder()
-                .setDateFormat("yyyy-mm-dd").create();
+                .setDateFormat("yyyy-MM-dd").create();
 
         sendResponse(gson.toJson(patient), resp);
     }
@@ -96,7 +95,7 @@ public class PatientController extends Controller {
         Record record = patientService.addRecord(patient);
 
         Gson gson = new GsonBuilder()
-                .setDateFormat("yyyy-mm-dd").create();
+                .setDateFormat("yyyy-MM-dd").create();
 
         sendResponse(gson.toJson(record), resp);
 
