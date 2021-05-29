@@ -15,7 +15,8 @@ import org.apache.log4j.Logger;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.io.IOException;
-import java.sql.SQLException;
+import java.io.StringReader;
+import java.util.List;
 
 
 @WebServlet(name = "PatientServlet", value = "/patient")
@@ -40,7 +41,9 @@ public class PatientController extends Controller {
                 case "PATIENT_BY_ID":
                     getPatientById(req, resp);
                     break;
-
+                case "GET_ALL_RECORDS":
+                    getAllRecords(req,resp);
+                    break;
 
             }
         } catch (Exception e) {
@@ -48,6 +51,8 @@ public class PatientController extends Controller {
             response(e.getMessage(), HttpServletResponse.SC_INTERNAL_SERVER_ERROR, resp);
         }
     }
+
+
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
@@ -106,6 +111,16 @@ public class PatientController extends Controller {
         }
     }
 
+    private void getAllRecords(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        String patientId = req.getParameter("id");
+        Patient patient = patientService.getPatientById(patientId);
+
+        Gson gson = new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd").create();
+
+        List<Record> recordList = recordService.getRecordsByPatientID(patientId);
+        sendResponse(gson.toJson(recordList), resp);
+    }
     public void destroy() {
 
     }

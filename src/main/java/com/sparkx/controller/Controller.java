@@ -24,9 +24,7 @@ public class Controller extends HttpServlet {
         }
         JsonParser parser = new JsonParser();
         JsonElement jsonElement = parser.parse(data);
-        JsonObject json = jsonElement.getAsJsonObject();
-
-        writer.print(json.toString());
+        writer.print(jsonElement.toString());
         writer.flush();
     }
 

@@ -1,5 +1,7 @@
 package com.sparkx.model;
 
+import com.sparkx.service.HospitalService;
+
 import java.util.Date;
 import java.util.UUID;
 
@@ -83,7 +85,11 @@ public class Record {
     }
 
     public void setQueueId(UUID queueId) {
+
         this.queueId = queueId;
+        try {
+            setQueueNumber(new HospitalService().getQueueNumberByQueueId(queueId));
+        }catch (Exception e){}
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.sparkx;
 
+import com.google.gson.*;
 import com.sparkx.Exception.NotFoundException;
 import com.sparkx.model.Queue;
 import com.sparkx.model.Record;
@@ -14,6 +15,7 @@ import com.sparkx.model.Types.RoleType;
 import com.sparkx.service.PatientService;
 
 import java.sql.Date;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -114,6 +116,24 @@ public class RunApp {
 //        }
 
 //        System.out.println(new RecordService().getRecordsByPatientID("247d37a7-ac72-4063-a157-b790f39de283"));
+
+        String patientId = "247d37a7-ac72-4063-a157-b790f39de283";
+        try {
+            Patient patient = new PatientService().getPatientById(patientId);
+        } catch (NotFoundException e) {
+            e.printStackTrace();
+        }
+
+        Gson gson = new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd").create();
+
+        List<Record> recordList = new RecordService().getRecordsByPatientID(patientId);
+        System.out.println(gson.toJson(recordList));
+        JsonParser parser = new JsonParser();
+        JsonElement jsonElement = parser.parse(gson.toJson(recordList));
+        JsonArray json = jsonElement.getAsJsonArray();
+        System.out.println(jsonElement);
+
        /* int serverPort = 8000;
 
         HttpServer server = HttpServer.create(new InetSocketAddress(serverPort), 0);
