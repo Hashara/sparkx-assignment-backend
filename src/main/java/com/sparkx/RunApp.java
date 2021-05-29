@@ -1,6 +1,10 @@
 package com.sparkx;
 
+import com.sparkx.Exception.NotFoundException;
+import com.sparkx.model.Queue;
+import com.sparkx.model.Record;
 import com.sparkx.service.HospitalService;
+import com.sparkx.service.RecordService;
 import com.sparkx.util.DataInsert;
 import com.sparkx.util.Util;
 import com.sparkx.model.Patient;
@@ -10,6 +14,7 @@ import com.sparkx.model.Types.RoleType;
 import com.sparkx.service.PatientService;
 
 import java.sql.Date;
+import java.util.UUID;
 
 
 public class RunApp {
@@ -76,8 +81,41 @@ public class RunApp {
 
 //        new HospitalService().getNearestHospitalBed(16,3);
 //        new HospitalService().getQueue();
-        new DataInsert().insert();
+//        new DataInsert().insert();
+//
+//        try {
+//            System.out.println(new PatientService().getPatientById("038d145b-70e1-45c4-9415-211074117f6c"));
+//        } catch (NotFoundException e) {
+//            e.printStackTrace();
+//        }
+
+//        for (int i = 0; i < 20 ; i++) {
+//            PatientService patientService = new PatientService();
+//            Patient patient = null;
+//            try {
+//                patient = patientService.getPatientById("247d37a7-ac72-4063-a157-b790f39de283");
+//            } catch (NotFoundException e) {
+//                e.printStackTrace();
+//            }
+//
+//            try {
+//                Record record = patientService.addRecord(patient);
+//                System.out.println(record);
+//                System.out.println(record.getQueueNumber());
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
+
+//        try {
+//            System.out.println(new HospitalService().getQueueNumberByQueueId(UUID.fromString("53c28109-baab-4cab-b0d6-cbf45363198c")));
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+
+//        System.out.println(new RecordService().getRecordsByPatientID("247d37a7-ac72-4063-a157-b790f39de283"));
        /* int serverPort = 8000;
+
         HttpServer server = HttpServer.create(new InetSocketAddress(serverPort), 0);
         server.createContext("/api/hello", (exchange -> {
 

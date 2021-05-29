@@ -7,6 +7,7 @@ import com.sparkx.Exception.NotFoundException;
 import com.sparkx.model.Patient;
 import com.sparkx.model.Record;
 import com.sparkx.service.PatientService;
+import com.sparkx.service.RecordService;
 import com.sparkx.util.Message;
 import com.sparkx.util.Util;
 import org.apache.log4j.Logger;
@@ -14,16 +15,19 @@ import org.apache.log4j.Logger;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.io.IOException;
+import java.sql.SQLException;
 
 
 @WebServlet(name = "PatientServlet", value = "/patient")
 public class PatientController extends Controller {
     private PatientService patientService;
+    private RecordService recordService;
     private Logger logger;
 
     public void init() {
         patientService = new PatientService();
         logger = Logger.getLogger(PatientController.class);
+        recordService = new RecordService();
     }
 
     @Override
@@ -90,15 +94,16 @@ public class PatientController extends Controller {
     private void createRecord(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         String patientId = req.getParameter("id");
         Patient patient = patientService.getPatientById(patientId);
-
-        //Todo: check there are active records
-        Record record = patientService.addRecord(patient);
-
         Gson gson = new GsonBuilder()
                 .setDateFormat("yyyy-MM-dd").create();
 
-        sendResponse(gson.toJson(record), resp);
-
+        try {
+            Record record = recordService.getActiveRecordByPatientID(patientId);
+            sendResponse(gson.toJson(record), resp);
+        } catch (NotFoundException e) {
+            Record record = patientService.addRecord(patient);
+            sendResponse(gson.toJson(record), resp);
+        }
     }
 
     public void destroy() {

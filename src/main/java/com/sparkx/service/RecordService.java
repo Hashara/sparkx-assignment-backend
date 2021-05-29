@@ -1,6 +1,7 @@
 package com.sparkx.service;
 
 import com.sparkx.Exception.NotCreatedException;
+import com.sparkx.Exception.NotFoundException;
 import com.sparkx.core.Database;
 import com.sparkx.model.*;
 import com.sparkx.model.Types.StatusType;
@@ -65,6 +66,22 @@ public class RecordService {
         return null;
     }
 
+
+    public Record getActiveRecordByPatientID(String patientId) throws NotFoundException, SQLException {
+        try (Connection connection = Database.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(Query.RECORD_ACTIVE_BY_PATIENT_ID)) {
+            preparedStatement.setString(1, patientId);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            return mapResultSetToRecordList(resultSet).get(0);
+        } catch (SQLException throwables) {
+            logger.error(throwables.getMessage());
+            throw throwables;
+        } catch (Exception e){
+            logger.error(e.getMessage());
+            throw new NotFoundException(Message.RECORD_NOT_FOUND);
+        }
+    }
 
     private List<Record> mapResultSetToRecordList(ResultSet resultSet) throws SQLException {
         List<Record> recordList = new ArrayList<>();

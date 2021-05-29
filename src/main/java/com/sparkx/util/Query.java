@@ -54,6 +54,7 @@ public class Query {
     public static final String RECORD_UPDATE_ADMITTED ="UPDATE " + RECORD_TABLE + " SET bedid=?, hospitalid=?, admitteddate=? WHERE serialnumber = ?";
     public static final String RECORD_UPDATE_DISCHARGED ="UPDATE " + RECORD_TABLE + " SET dischargeddatee=? WHERE serialnumber = ?";
     public static final String RECORD_BY_PATIENT_ID = "SELECT serialnumber, bedid, hospitalid, regdate, admitteddate, dischargeddate, queueid FROM " + RECORD_TABLE + " WHERE patientid = ?::uuid";
+    public static final String RECORD_ACTIVE_BY_PATIENT_ID = "SELECT serialnumber, bedid, hospitalid, regdate, admitteddate, dischargeddate, queueid FROM " + RECORD_TABLE + " WHERE patientid = ?::uuid AND dischargeddate is NULL";
     public static final String RECORD_BY_HOSPITAL = "SELECT patientid,serialnumber, bedid, regdate, admitteddate, dischargeddate FROM " + RECORD_TABLE + " WHERE hospitalid = ?";
 
     /* severity queries */
