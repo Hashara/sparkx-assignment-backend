@@ -15,7 +15,6 @@ import org.apache.log4j.Logger;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.List;
 
 
@@ -44,13 +43,16 @@ public class PatientController extends Controller {
                 case "GET_ALL_RECORDS":
                     getAllRecords(req,resp);
                     break;
-
+                case "GET_ACTIVE_RECORD":
+                    getActiveRecord(req,resp);
+                    break;
             }
         } catch (Exception e) {
             logger.error(e.getMessage());
             response(e.getMessage(), HttpServletResponse.SC_INTERNAL_SERVER_ERROR, resp);
         }
     }
+
 
 
 
@@ -121,6 +123,18 @@ public class PatientController extends Controller {
         List<Record> recordList = recordService.getRecordsByPatientID(patientId);
         sendResponse(gson.toJson(recordList), resp);
     }
+
+    private void getActiveRecord(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        String patientId = req.getParameter("id");
+        Patient patient = patientService.getPatientById(patientId);
+
+        Gson gson = new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd").create();
+
+        Record record = recordService.getActiveRecordByPatientID(patientId);
+        sendResponse(gson.toJson(record), resp);
+    }
+
     public void destroy() {
 
     }
