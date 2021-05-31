@@ -6,17 +6,17 @@ import java.util.Date;
 import java.util.UUID;
 
 public class Severity {
-    private String severityId;
+    private UUID severityId;
     private SeverityLevel level;
     private UUID doctorId;
     private Date markedDate;
     private String serialNumber;
 
-    public String getSeverityId() {
+    public UUID getSeverityId() {
         return severityId;
     }
 
-    public void setSeverityId(String severityId) {
+    public void setSeverityId(UUID severityId) {
         this.severityId = severityId;
     }
 

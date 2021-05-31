@@ -68,6 +68,8 @@ public class PersonController extends Controller {
     private void getPersonById(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         String personId = req.getParameter("id");
         Person person = personService.getPersonById(personId);
+
+        // todo: check person role == patient
         Gson gson = new Gson();
         sendResponse(gson.toJson(person), resp, HttpServletResponse.SC_OK);
 

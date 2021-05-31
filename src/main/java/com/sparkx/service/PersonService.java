@@ -43,7 +43,6 @@ public class PersonService {
     }
 
     public Person getPersonById(String userId) throws Exception{
-        Person person = null;
         try (Connection connection = Database.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(Query.PERSON_BY_ID)) {
             preparedStatement.setString(1, userId);
@@ -53,7 +52,7 @@ public class PersonService {
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage());
             throw  throwables;
-        }catch (IndexOutOfBoundsException e){
+        }catch (Exception e){
             logger.error(Message.PERSON_NOT_FOUND);
             throw new NotFoundException(Message.PATIENT_NOT_FOUND);
         }

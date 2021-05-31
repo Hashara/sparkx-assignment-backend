@@ -62,6 +62,6 @@ public class Query {
     /* severity queries */
     public static final String SEVERITY_CREATE = "INSERT INTO " + SEVERITY_TABLE + "(severityid, level, doctorid, markeddate, serialnumber) VALUES (?, ?, ?, ?, ?)";
     public static final String SEVERITY_BY_SERIAL_NUMBER = "SELECT severityid, level, doctorid, markeddate, serialnumber FROM " + SEVERITY_TABLE +
-            "WHERE serialnumber = ?";
+            " WHERE serialnumber = ?";
 
 }

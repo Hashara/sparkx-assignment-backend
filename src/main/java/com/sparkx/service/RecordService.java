@@ -3,7 +3,9 @@ package com.sparkx.service;
 import com.sparkx.Exception.NotCreatedException;
 import com.sparkx.Exception.NotFoundException;
 import com.sparkx.core.Database;
+import com.sparkx.dao.RecordDAO;
 import com.sparkx.model.*;
+import com.sparkx.model.Types.SeverityLevel;
 import com.sparkx.model.Types.StatusType;
 import com.sparkx.util.Message;
 import com.sparkx.util.Query;
@@ -53,7 +55,7 @@ public class RecordService {
         }
     }
 
-    public List<Record> getRecordsByPatientID(String patientId) {
+    public List<RecordDAO> getRecordsByPatientID(String patientId) throws Exception {
         try (Connection connection = Database.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(Query.RECORD_BY_PATIENT_ID)) {
             preparedStatement.setString(1, patientId);
@@ -67,7 +69,7 @@ public class RecordService {
     }
 
 
-    public Record getActiveRecordByPatientID(String patientId) throws NotFoundException, SQLException {
+    public RecordDAO getActiveRecordByPatientID(String patientId) throws NotFoundException, SQLException {
         try (Connection connection = Database.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(Query.RECORD_ACTIVE_BY_PATIENT_ID)) {
             preparedStatement.setString(1, patientId);
@@ -83,12 +85,23 @@ public class RecordService {
         }
     }
 
-    private List<Record> mapResultSetToRecordList(ResultSet resultSet) throws SQLException {
-        List<Record> recordList = new ArrayList<>();
+    public List<Severity> getSeverityList(UUID serialNumber) throws Exception {
+        try (Connection connection = Database.getConnection();
+             PreparedStatement statement = connection.prepareStatement(Query.SEVERITY_BY_SERIAL_NUMBER)) {
+            statement.setObject(1, serialNumber);
+            ResultSet resultSet = statement.executeQuery();
+            return mapResultSetToSeverityList(resultSet);
+        } catch (Exception throwables) {
+            throwables.printStackTrace();
+            throw throwables;
+        }
+    }
+    private List<RecordDAO> mapResultSetToRecordList(ResultSet resultSet) throws Exception {
+        List<RecordDAO> recordList = new ArrayList<>();
 
         //serialnumber, bedid, hospitalid, regdate, admitteddate, dischargeddate, queueid
         while (resultSet.next()) {
-            Record record = new Record();
+            RecordDAO record = new RecordDAO();
             record.setSerialNumber((UUID) resultSet.getObject("serialnumber"));
             record.setBedId(resultSet.getString("bedid"));
             record.setHospitalId((UUID) resultSet.getObject("hospitalid"));
@@ -96,8 +109,29 @@ public class RecordService {
             record.setAdmittedDate(resultSet.getDate("admitteddate"));
             record.setDischargedDate(resultSet.getDate("dischargeddate"));
             record.setQueueId((UUID) resultSet.getObject("queueid"));
+            record.setSeverityList(getSeverityList((UUID) resultSet.getObject("serialnumber")));
             recordList.add(record);
         }
         return recordList;
+    }
+
+
+
+    private List<Severity> mapResultSetToSeverityList(ResultSet resultSet) throws SQLException {
+        List<Severity> severityList = new ArrayList<>();
+
+        // severityid, level, doctorid, markeddate, serialnumber
+        while (resultSet.next()) {
+            Severity severity = new Severity();
+            severity.setSeverityId((UUID)resultSet.getObject("severityid"));
+            severity.setLevel(SeverityLevel.valueOf(resultSet.getString("level")));
+            severity.setDoctorId((UUID) resultSet.getObject("doctorid"));
+            severity.setMarkedDate(resultSet.getDate("markeddate"));
+            severity.setSeverityId((UUID) resultSet.getObject("serialnumber"));
+
+            severityList.add(severity);
+        }
+        return severityList;
+
     }
 }

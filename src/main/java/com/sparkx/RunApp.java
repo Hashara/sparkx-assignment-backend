@@ -1,7 +1,12 @@
 package com.sparkx;
 
 import com.sparkx.Exception.NotFoundException;
+import com.sparkx.dao.RecordDAO;
 import com.sparkx.service.PersonService;
+import com.sparkx.service.RecordService;
+import com.sparkx.util.DataInsert;
+
+import java.util.List;
 
 
 public class RunApp {
@@ -102,22 +107,26 @@ public class RunApp {
 
 //        System.out.println(new RecordService().getRecordsByPatientID("247d37a7-ac72-4063-a157-b790f39de283"));
 
-/*        String patientId = "247d37a7-ac72-4063-a157-b790f39de283";
+//    String patientId = "247d37a7-ac72-4063-a157-b790f39de283";
+//        try {
+//            Patient patient = new PatientService().getPatientById(patientId);
+//        } catch (NotFoundException e) {
+//            e.printStackTrace();
+//        }
+//
+//        Gson gson = new GsonBuilder()
+//                .setDateFormat("yyyy-MM-dd").create();
+
         try {
-            Patient patient = new PatientService().getPatientById(patientId);
-        } catch (NotFoundException e) {
+            List<RecordDAO> recordList = new RecordService().getRecordsByPatientID("b9b05317-33c6-4c5b-befd-d25b52f1b417");
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
-        Gson gson = new GsonBuilder()
-                .setDateFormat("yyyy-MM-dd").create();
-
-        List<Record> recordList = new RecordService().getRecordsByPatientID(patientId);
-        System.out.println(gson.toJson(recordList));
-        JsonParser parser = new JsonParser();
-        JsonElement jsonElement = parser.parse(gson.toJson(recordList));
-        JsonArray json = jsonElement.getAsJsonArray();
-        System.out.println(jsonElement);*/
+//        System.out.println(gson.toJson(recordList));
+//        JsonParser parser = new JsonParser();
+//        JsonElement jsonElement = parser.parse(gson.toJson(recordList));
+//        JsonArray json = jsonElement.getAsJsonArray();
+//        System.out.println(jsonElement);
 
 /*
         String jsonResponse ="{" +
@@ -139,13 +148,13 @@ public class RunApp {
             throwables.printStackTrace();
         }*/
 
-        try {
-            System.out.println(new PersonService().getPersonById("e351f5a3-c655-4dac-a23f-222999099eea"));
-        } catch (NotFoundException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            System.out.println(new PersonService().getPersonById("e351f5a3-c655-4dac-a23f-222999099eea"));
+//        } catch (NotFoundException e) {
+//            e.printStackTrace();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
        /* int serverPort = 8000;
 

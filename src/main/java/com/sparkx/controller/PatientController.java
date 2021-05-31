@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sparkx.Exception.NotCreatedException;
 import com.sparkx.Exception.NotFoundException;
+import com.sparkx.dao.RecordDAO;
 import com.sparkx.model.Patient;
 import com.sparkx.model.Record;
 import com.sparkx.service.PatientService;
@@ -102,11 +103,11 @@ public class PatientController extends Controller {
                 .setDateFormat("yyyy-MM-dd").create();
 
         try {
-            Record record = recordService.getActiveRecordByPatientID(patientId);
+            RecordDAO record = recordService.getActiveRecordByPatientID(patientId);
             sendResponse(gson.toJson(record), resp, HttpServletResponse.SC_OK);
         } catch (NotFoundException e) {
             Record record = patientService.addRecord(patient);
-            sendResponse(gson.toJson(record), resp, HttpServletResponse.SC_OK);
+            sendResponse(gson.toJson(record), resp, HttpServletResponse.SC_CREATED);
         }
     }
 
@@ -117,7 +118,7 @@ public class PatientController extends Controller {
         Gson gson = new GsonBuilder()
                 .setDateFormat("yyyy-MM-dd").create();
 
-        List<Record> recordList = recordService.getRecordsByPatientID(patientId);
+        List<RecordDAO> recordList = recordService.getRecordsByPatientID(patientId);
         sendResponse(gson.toJson(recordList), resp, HttpServletResponse.SC_OK);
     }
 
@@ -128,7 +129,7 @@ public class PatientController extends Controller {
         Gson gson = new GsonBuilder()
                 .setDateFormat("yyyy-MM-dd").create();
 
-        Record record = recordService.getActiveRecordByPatientID(patientId);
+        RecordDAO record = recordService.getActiveRecordByPatientID(patientId);
         sendResponse(gson.toJson(record), resp, HttpServletResponse.SC_OK);
     }
 
