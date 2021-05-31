@@ -6,7 +6,7 @@ import java.util.UUID;
 
 public class Util {
 
-    public static String hashPassword(String plainTextPassword){
+    public static String hashPassword(String plainTextPassword) {
         return BCrypt.hashpw(plainTextPassword, BCrypt.gensalt());
     }
 
@@ -17,7 +17,7 @@ public class Util {
             System.out.println("The password does not match.");
     }
 
-    public static UUID getUUID(){
+    public static UUID getUUID() {
         return UUID.randomUUID();
     }
 }

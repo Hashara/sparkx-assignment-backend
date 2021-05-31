@@ -1,17 +1,19 @@
 package com.sparkx.model;
 
+import java.util.UUID;
+
 public class Hospital {
-    private String hospitalId;
+    private UUID hospitalId;
     private String name;
     private String district;
     private int location_x;
     private int location_y;
 
-    public String getHospitalId() {
+    public UUID getHospitalId() {
         return hospitalId;
     }
 
-    public void setHospitalId(String hospitalId) {
+    public void setHospitalId(UUID hospitalId) {
         this.hospitalId = hospitalId;
     }
 

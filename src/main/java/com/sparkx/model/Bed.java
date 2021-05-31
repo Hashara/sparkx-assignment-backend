@@ -2,10 +2,12 @@ package com.sparkx.model;
 
 import com.sparkx.model.Types.StatusType;
 
+import java.util.UUID;
+
 public class Bed {
 
     private String bedId;
-    private String hospitalId;
+    private UUID hospitalId;
     private StatusType status;
 
     public String getBedId() {
@@ -16,11 +18,11 @@ public class Bed {
         this.bedId = bedId;
     }
 
-    public String getHospitalId() {
+    public UUID getHospitalId() {
         return hospitalId;
     }
 
-    public void setHospitalId(String hospitalId) {
+    public void setHospitalId(UUID hospitalId) {
         this.hospitalId = hospitalId;
     }
 

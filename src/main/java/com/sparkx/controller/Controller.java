@@ -1,6 +1,9 @@
 package com.sparkx.controller;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.sun.istack.internal.Nullable;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -11,7 +14,10 @@ import java.io.PrintWriter;
 
 public class Controller extends HttpServlet {
 
-    public void sendResponse(String data, HttpServletResponse resp)  {
+    public void sendResponse(String data, HttpServletResponse resp, Integer code) {
+        if (code != null) {
+            resp.setStatus(code);
+        }
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
         PrintWriter writer = null;
@@ -20,9 +26,9 @@ public class Controller extends HttpServlet {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        JsonObject json = new JsonObject();
-        json.addProperty("Data", data);
-        writer.print(json.toString());
+        JsonParser parser = new JsonParser();
+        JsonElement jsonElement = parser.parse(data);
+        writer.print(jsonElement.toString());
         writer.flush();
     }
 
@@ -37,8 +43,14 @@ public class Controller extends HttpServlet {
         return jb.toString();
     }
 
-    public void response(String message, int code, HttpServletResponse resp)  {
-        resp.setStatus(code);
-        sendResponse("{'message':" + message + "}",resp);
+    public JsonObject getJsonObject(HttpServletRequest req) throws IOException {
+        String jsonResponse = getjsonRequest(req);
+        JsonParser parser = new JsonParser();
+        JsonElement jsonElement = parser.parse(jsonResponse);
+        return jsonElement.getAsJsonObject();
+    }
+
+    public void sendMessageResponse(String message, HttpServletResponse resp, int code) {
+        sendResponse("{\"message\": \"" + message + "\"}", resp, code);
     }
 }

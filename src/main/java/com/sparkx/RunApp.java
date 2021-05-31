@@ -1,15 +1,12 @@
 package com.sparkx;
 
-import com.sparkx.service.HospitalService;
+import com.sparkx.Exception.NotFoundException;
+import com.sparkx.dao.RecordDAO;
+import com.sparkx.service.PersonService;
+import com.sparkx.service.RecordService;
 import com.sparkx.util.DataInsert;
-import com.sparkx.util.Util;
-import com.sparkx.model.Patient;
-import com.sparkx.model.Person;
-import com.sparkx.model.Types.GenderType;
-import com.sparkx.model.Types.RoleType;
-import com.sparkx.service.PatientService;
 
-import java.sql.Date;
+import java.util.List;
 
 
 public class RunApp {
@@ -75,9 +72,92 @@ public class RunApp {
 
 
 //        new HospitalService().getNearestHospitalBed(16,3);
-        new HospitalService().getQueue();
+//        new HospitalService().getQueue();
 //        new DataInsert().insert();
+//
+//        try {
+//            System.out.println(new PatientService().getPatientById("038d145b-70e1-45c4-9415-211074117f6c"));
+//        } catch (NotFoundException e) {
+//            e.printStackTrace();
+//        }
+
+//        for (int i = 0; i < 20 ; i++) {
+//            PatientService patientService = new PatientService();
+//            Patient patient = null;
+//            try {
+//                patient = patientService.getPatientById("247d37a7-ac72-4063-a157-b790f39de283");
+//            } catch (NotFoundException e) {
+//                e.printStackTrace();
+//            }
+//
+//            try {
+//                Record record = patientService.addRecord(patient);
+//                System.out.println(record);
+//                System.out.println(record.getQueueNumber());
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
+
+//        try {
+//            System.out.println(new HospitalService().getQueueNumberByQueueId(UUID.fromString("53c28109-baab-4cab-b0d6-cbf45363198c")));
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+
+//        System.out.println(new RecordService().getRecordsByPatientID("247d37a7-ac72-4063-a157-b790f39de283"));
+
+//    String patientId = "247d37a7-ac72-4063-a157-b790f39de283";
+//        try {
+//            Patient patient = new PatientService().getPatientById(patientId);
+//        } catch (NotFoundException e) {
+//            e.printStackTrace();
+//        }
+//
+//        Gson gson = new GsonBuilder()
+//                .setDateFormat("yyyy-MM-dd").create();
+
+        try {
+            List<RecordDAO> recordList = new RecordService().getRecordsByPatientID("b9b05317-33c6-4c5b-befd-d25b52f1b417");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+//        System.out.println(gson.toJson(recordList));
+//        JsonParser parser = new JsonParser();
+//        JsonElement jsonElement = parser.parse(gson.toJson(recordList));
+//        JsonArray json = jsonElement.getAsJsonArray();
+//        System.out.println(jsonElement);
+
+/*
+        String jsonResponse ="{" +
+                "    \"first_name\": \"MoH\",\n" +
+                "    \"last_name\": \"One\",\n" +
+                "    \"email\":\"moh1@gmail.com\",\n" +
+                "    \"password\":\"123456\",\n" +
+                "    \"role\":\"MoH\"\n" +
+                "}";
+        Gson gson = new GsonBuilder()
+                .setDateFormat("yyyy-mm-dd").create();
+        Person person = gson.fromJson(jsonResponse, Person.class);
+
+        person.setPassword(Util.hashPassword(person.getPassword()));
+        try {
+            person = new PersonService().createPerson(person);
+            System.out.println(person);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }*/
+
+//        try {
+//            System.out.println(new PersonService().getPersonById("e351f5a3-c655-4dac-a23f-222999099eea"));
+//        } catch (NotFoundException e) {
+//            e.printStackTrace();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+
        /* int serverPort = 8000;
+
         HttpServer server = HttpServer.create(new InetSocketAddress(serverPort), 0);
         server.createContext("/api/hello", (exchange -> {
 

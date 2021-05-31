@@ -1,7 +1,9 @@
 package com.sparkx.service;
 
+import com.sparkx.Exception.NotFoundException;
 import com.sparkx.model.Bed;
 import com.sparkx.model.Queue;
+import com.sparkx.util.Message;
 import com.sparkx.util.Query;
 import com.sparkx.config.Config;
 import com.sparkx.core.Database;
@@ -12,6 +14,7 @@ import org.apache.log4j.Logger;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class HospitalService {
     Logger logger = Logger.getLogger(HospitalService.class);
@@ -24,7 +27,7 @@ public class HospitalService {
 
             connection.setAutoCommit(false);
             //(hospitalid, name, district, location_x, location_y)
-            createHospital.setString(1, hospital.getHospitalId());
+            createHospital.setObject(1, hospital.getHospitalId());
             createHospital.setString(2, hospital.getName());
             createHospital.setString(3, hospital.getDistrict());
             createHospital.setInt(4, hospital.getLocation_x());
@@ -33,7 +36,7 @@ public class HospitalService {
             createHospital.execute();
             for (int i = 0; i < Config.BEDS_PER_HOSPITAL * 2; i++) {
                 if ((i + 1) % 2 == 1) {
-                    createBeds.setString(i + 1, hospital.getHospitalId());
+                    createBeds.setObject(i + 1, hospital.getHospitalId());
                 } else {
                     createBeds.setString(i + 1, String.valueOf(StatusType.available));
                 }
@@ -92,26 +95,28 @@ public class HospitalService {
             return bedList.get(0);
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage());
+        }catch (IndexOutOfBoundsException e){
+            logger.info(Message.NO_BEDS_AVAILABLE);
         }
         return null;
     }
 
-    public Queue getQueue(){
+    public int getQueueNumberByQueueId(UUID queueID) throws Exception {
         try(Connection connection = Database.getConnection();
-        Statement getQueueNumber = connection.createStatement();
-        PreparedStatement statement = connection.prepareStatement(Query.QUEUE_CREATE)) {
+        PreparedStatement statement = connection.prepareStatement(Query.QUEUE_NO_BY_ID)) {
 
-           ResultSet queueDetails = getQueueNumber.executeQuery(Query.QUEUE_COUNT);
-           Queue queue = new Queue();
-           while (queueDetails.next()){
-               queue.setQueueId(queueDetails.getInt("currentId") + 1 );
-               return queue;
-           }
+            statement.setObject(1,queueID);
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()){
+                return resultSet.getInt("queue_number");
+            }
 
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage());
+            throw throwables;
         }
-        return null;
+        throw new NotFoundException(Message.QUEUE_NOT_FOUND);
     }
 
 
@@ -120,7 +125,7 @@ public class HospitalService {
 
         while ( resultSet.next() ) {
             Hospital h = new Hospital();
-            h.setHospitalId(resultSet.getString("hospitalid"));
+            h.setHospitalId((UUID) resultSet.getObject("hospitalid"));
             h.setName(resultSet.getString("name"));
             h.setDistrict(resultSet.getString("district"));
             h.setLocation_x(resultSet.getInt("location_x"));
@@ -138,7 +143,7 @@ public class HospitalService {
         while (resultSet.next()){
             Bed bed = new Bed();
             bed.setBedId(resultSet.getString("bedid"));
-            bed.setHospitalId(resultSet.getString("hospitalid"));
+            bed.setHospitalId((UUID) resultSet.getObject("hospitalid"));
             bed.setStatus(StatusType.valueOf(resultSet.getString("status")));
             bedList.add(bed);
             System.out.println(bed);

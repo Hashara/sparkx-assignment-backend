@@ -1,17 +1,18 @@
 package com.sparkx.model;
 
 import java.sql.Timestamp;
+import java.util.UUID;
 
 public class Queue {
-    private int queueId;
+    private UUID queueId;
     private Timestamp createdTIme;
 
 
-    public int getQueueId() {
+    public UUID getQueueId() {
         return queueId;
     }
 
-    public void setQueueId(int queueId) {
+    public void setQueueId(UUID queueId) {
         this.queueId = queueId;
     }
 
