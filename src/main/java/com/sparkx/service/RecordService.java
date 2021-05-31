@@ -55,6 +55,38 @@ public class RecordService {
         }
     }
 
+    public Severity markSeverity(Severity severity) throws SQLException {
+        try(Connection connection = Database.getConnection();
+        PreparedStatement statement = connection.prepareStatement(Query.SEVERITY_CREATE)) {
+//            severityid, level, doctorid, markeddate, serialnumber
+            statement.setObject(1,severity.getSeverityId());
+            statement.setString(2, String.valueOf(severity.getLevel()));
+            statement.setObject(3,severity.getDoctorId());
+            statement.setDate(4, (Date) severity.getMarkedDate());
+            statement.setObject(5,severity.getSerialNumber());
+            statement.execute();
+            return severity;
+        } catch (Exception throwables) {
+            throwables.printStackTrace();
+            throw throwables;
+        }
+    }
+
+    public void updateAdmitDate(String serialNumber) throws Exception {
+        try(Connection connection = Database.getConnection();
+        PreparedStatement statement = connection.prepareStatement(Query.RECORD_UPDATE_ADMITTED)) {
+            long millis = System.currentTimeMillis();
+            statement.setDate(1,new Date(millis) );
+            statement.setString(2,serialNumber);
+            statement.execute();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            throw throwables;
+        }catch (Exception e){
+            logger.error(e.getMessage());
+            throw new NotFoundException(Message.RECORD_NOT_FOUND);
+        }
+    }
     public List<RecordDAO> getRecordsByPatientID(String patientId) throws Exception {
         try (Connection connection = Database.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(Query.RECORD_BY_PATIENT_ID)) {
