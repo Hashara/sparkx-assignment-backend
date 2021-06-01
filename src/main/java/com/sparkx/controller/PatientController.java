@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sparkx.Exception.NotCreatedException;
 import com.sparkx.Exception.NotFoundException;
-import com.sparkx.dao.RecordDAO;
+import com.sparkx.model.dao.RecordDAO;
 import com.sparkx.model.Patient;
 import com.sparkx.model.Record;
 import com.sparkx.service.PatientService;

@@ -2,7 +2,6 @@ package com.sparkx.service;
 
 import com.sparkx.Exception.NotCreatedException;
 import com.sparkx.Exception.NotFoundException;
-import com.sparkx.dao.PatientRecordDAO;
 import com.sparkx.model.*;
 import com.sparkx.model.Types.RoleType;
 import com.sparkx.util.Message;

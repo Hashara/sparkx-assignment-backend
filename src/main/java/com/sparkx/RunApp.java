@@ -1,12 +1,10 @@
 package com.sparkx;
 
-import com.sparkx.Exception.NotFoundException;
-import com.sparkx.dao.RecordDAO;
-import com.sparkx.service.PersonService;
+import com.google.gson.Gson;
+import com.sparkx.model.Severity;
 import com.sparkx.service.RecordService;
-import com.sparkx.util.DataInsert;
 
-import java.util.List;
+import java.sql.SQLException;
 
 
 public class RunApp {
@@ -117,11 +115,11 @@ public class RunApp {
 //        Gson gson = new GsonBuilder()
 //                .setDateFormat("yyyy-MM-dd").create();
 
-        try {
-            List<RecordDAO> recordList = new RecordService().getRecordsByPatientID("b9b05317-33c6-4c5b-befd-d25b52f1b417");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            List<RecordDAO> recordList = new RecordService().getRecordsByPatientID("b9b05317-33c6-4c5b-befd-d25b52f1b417");
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 //        System.out.println(gson.toJson(recordList));
 //        JsonParser parser = new JsonParser();
 //        JsonElement jsonElement = parser.parse(gson.toJson(recordList));
@@ -156,7 +154,37 @@ public class RunApp {
 //            e.printStackTrace();
 //        }
 
-       /* int serverPort = 8000;
+//        try {
+//            List<Patient> patientList = new PatientService().getPatientsByHospitalId("fc526c67-d055-4b7e-938b-5794a14e806b");
+//            System.out.println(patientList);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+
+//        try {
+//            new RecordService().updateAdmitDate("60e996a8-a99f-4062-9573-ac4a4e4646a7");
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        String jsonResponse = "{\n" +
+//                "    \"level\":\"critical\",\n" +
+//                "    \"doctorId\":\"6cf2b002-04e3-4b87-994b-b4a66c5e166a\",\n" +
+//                "    \"serialNumber\": \"60e996a8-a99f-4062-9573-ac4a4e4646a7\"\n" +
+//                "}";
+//            Gson gson = new Gson();
+//            Severity severity = gson.fromJson(jsonResponse, Severity.class);
+//        try {
+//            severity =  new RecordService().markSeverity(severity);
+//        } catch (SQLException throwables) {
+//            throwables.printStackTrace();
+//        }
+
+        try {
+            new RecordService().updateDischargeDate("60e996a8-a99f-4062-9573-ac4a4e4646a7");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+ /* int serverPort = 8000;
 
         HttpServer server = HttpServer.create(new InetSocketAddress(serverPort), 0);
         server.createContext("/api/hello", (exchange -> {

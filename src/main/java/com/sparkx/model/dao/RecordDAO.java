@@ -1,10 +1,9 @@
-package com.sparkx.dao;
+package com.sparkx.model.dao;
 
 import com.sparkx.model.Record;
 import com.sparkx.model.Severity;
 
 import java.util.List;
-import java.util.UUID;
 
 public class RecordDAO extends Record {
     private List<Severity> severityList;
