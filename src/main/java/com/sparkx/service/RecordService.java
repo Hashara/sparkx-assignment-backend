@@ -1,8 +1,11 @@
 package com.sparkx.service;
 
+import com.sparkx.Exception.FailedToAddException;
+import com.sparkx.Exception.FailedToGetException;
 import com.sparkx.Exception.NotCreatedException;
 import com.sparkx.Exception.NotFoundException;
 import com.sparkx.core.Database;
+import com.sparkx.model.dao.QueuePatientSerialDAO;
 import com.sparkx.model.dao.RecordDAO;
 import com.sparkx.model.*;
 import com.sparkx.model.Types.SeverityLevel;
@@ -57,20 +60,20 @@ public class RecordService {
     }
 
     public Severity markSeverity(Severity severity) throws SQLException {
-        if (severity.getSeverityId() == null){
+        if (severity.getSeverityId() == null) {
             severity.setSeverityId(Util.getUUID());
         }
-        if (severity.getMarkedDate() == null){
+        if (severity.getMarkedDate() == null) {
             severity.setMarkedDate(Util.getDate());
         }
-        try(Connection connection = Database.getConnection();
-        PreparedStatement statement = connection.prepareStatement(Query.SEVERITY_CREATE)) {
+        try (Connection connection = Database.getConnection();
+             PreparedStatement statement = connection.prepareStatement(Query.SEVERITY_CREATE)) {
 //            severityid, level, doctorid, markeddate, serialnumber
-            statement.setObject(1,severity.getSeverityId());
+            statement.setObject(1, severity.getSeverityId());
             statement.setString(2, String.valueOf(severity.getLevel()));
-            statement.setObject(3,severity.getDoctorId());
+            statement.setObject(3, severity.getDoctorId());
             statement.setDate(4, (Date) severity.getMarkedDate());
-            statement.setObject(5,severity.getSerialNumber());
+            statement.setObject(5, severity.getSerialNumber());
             statement.execute();
             return severity;
         } catch (Exception throwables) {
@@ -80,35 +83,96 @@ public class RecordService {
     }
 
     public void updateAdmitDate(String serialNumber) throws Exception {
-        try(Connection connection = Database.getConnection();
-        PreparedStatement statement = connection.prepareStatement(Query.RECORD_UPDATE_ADMITTED)) {
+        try (Connection connection = Database.getConnection();
+             PreparedStatement statement = connection.prepareStatement(Query.RECORD_UPDATE_ADMITTED)) {
             long millis = System.currentTimeMillis();
-            statement.setDate(1,new Date(millis) );
-            statement.setString(2,serialNumber);
+            statement.setDate(1, new Date(millis));
+            statement.setString(2, serialNumber);
             statement.execute();
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage());
             throw throwables;
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.error(e.getMessage());
             throw new NotFoundException(Message.RECORD_NOT_FOUND);
         }
     }
 
     public void updateDischargeDate(String serialNumber) throws Exception {
-        try(Connection connection = Database.getConnection();
-            PreparedStatement statement = connection.prepareStatement(Query.RECORD_UPDATE_DISCHARGED)) {
-            statement.setDate(1, Util.getDate() );
-            statement.setString(2,serialNumber);
+        try (Connection connection = Database.getConnection();
+             PreparedStatement statement = connection.prepareStatement(Query.RECORD_UPDATE_DISCHARGED);
+             Statement queueFirst = connection.createStatement();
+             PreparedStatement updateRecord = connection.prepareStatement(Query.RECORD_UPDATE);
+             PreparedStatement deleteQueueItem = connection.prepareStatement(Query.QUEUE_DELETE);
+             PreparedStatement updateBedStatus = connection.prepareStatement(Query.BED_UPDATE_STATUS)
+        ) {
+
+            connection.setAutoCommit(false);
+            statement.setDate(1, Util.getDate());
+            statement.setString(2, serialNumber);
+
+            ResultSet resultSet = queueFirst.executeQuery(Query.QUEUE_FIRST);
+            Bed bed = getBedDetailsBySerialNumber(serialNumber);
+            try {
+                QueuePatientSerialDAO firstQueue = mapResultSetToQueuePatientSerialDAO(resultSet).get(0);
+                if (firstQueue == null) {
+                    throw new NotFoundException(Message.QUEUE_EMPTY);
+                }
+
+                //  hospitalid =? bedid=? WHERE serialNumber=?
+                updateRecord.setObject(1, bed.getHospitalId());
+                updateRecord.setString(2, bed.getBedId());
+                updateRecord.setObject(3, firstQueue.getSerialNumber());
+
+                deleteQueueItem.setObject(1, firstQueue.getQueueId());
+
+
+                updateRecord.execute();
+                deleteQueueItem.execute();
+            } catch (Exception e) {
+                updateBedStatus.setString(1, String.valueOf(StatusType.available));
+                updateBedStatus.setString(2, bed.getBedId());
+                updateBedStatus.setObject(3, bed.getHospitalId());
+
+                updateRecord.execute();
+                deleteQueueItem.execute();
+                updateBedStatus.execute();
+            }
             statement.execute();
+
+            connection.commit();
+
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage());
             throw throwables;
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.error(e.getMessage());
             throw new NotFoundException(Message.RECORD_NOT_FOUND);
         }
     }
+
+    private Bed getBedDetailsBySerialNumber(String serialNumber) throws Exception {
+        try (Connection connection = Database.getConnection();
+             PreparedStatement bedDetails = connection.prepareStatement(Query.RECORD_BED_BY_SERIAL_NUMBER)) {
+            bedDetails.setString(1, serialNumber);
+            ResultSet resultSet = bedDetails.executeQuery();
+            return mapResultSetToBedList(resultSet).get(0);
+
+        }
+    }
+
+    public List<Bed> mapResultSetToBedList(ResultSet resultSet) throws SQLException {
+        List<Bed> bedList = new ArrayList<>();
+
+        while (resultSet.next()) {
+            Bed bed = new Bed();
+            bed.setBedId(resultSet.getString("bedid"));
+            bed.setHospitalId((UUID) resultSet.getObject("hospitalid"));
+            bedList.add(bed);
+        }
+        return bedList;
+    }
+
 
     public List<RecordDAO> getRecordsByPatientID(String patientId) throws Exception {
         try (Connection connection = Database.getConnection();
@@ -122,7 +186,6 @@ public class RecordService {
         }
         return null;
     }
-
 
     public RecordDAO getActiveRecordByPatientID(String patientId) throws NotFoundException, SQLException {
         try (Connection connection = Database.getConnection();
@@ -151,6 +214,82 @@ public class RecordService {
             throw throwables;
         }
     }
+
+    public void addQueuePatientToHospital(UUID hospitalId) throws FailedToGetException, FailedToAddException, SQLException {
+        try {
+            List<QueuePatientSerialDAO> firstsInQueue = getFirstsInQueue();
+
+            System.out.println(firstsInQueue.size());
+            int count = 1;
+            for (QueuePatientSerialDAO q :
+                    firstsInQueue) {
+                addToBed(q, count, hospitalId);
+                count++;
+            }
+        } catch (FailedToGetException e) {
+            logger.error(e.getMessage());
+            throw e;
+        } catch (FailedToAddException e) {
+            logger.error(e.getMessage());
+            throw e;
+        } catch (Exception throwables) {
+            throwables.printStackTrace();
+            throw throwables;
+        }
+    }
+
+    private void addToBed(QueuePatientSerialDAO queuePatientSerialDAO, Integer bedId, UUID hospitalId) throws FailedToAddException {
+        try (Connection connection = Database.getConnection();
+             PreparedStatement updateRecord = connection.prepareStatement(Query.RECORD_UPDATE);
+             PreparedStatement deleteQueueItem = connection.prepareStatement(Query.QUEUE_DELETE);
+             PreparedStatement updateBedStatus = connection.prepareStatement(Query.BED_UPDATE_STATUS)) {
+            connection.setAutoCommit(false);
+
+            //  hospitalid =? bedid=? WHERE serialNumber=?
+            updateRecord.setObject(1, hospitalId);
+            updateRecord.setString(2, bedId.toString());
+            updateRecord.setObject(3, queuePatientSerialDAO.getSerialNumber());
+
+            deleteQueueItem.setObject(1, queuePatientSerialDAO.getQueueId());
+
+            updateBedStatus.setString(1, String.valueOf(StatusType.unavailable));
+            updateBedStatus.setString(2, bedId.toString());
+            updateBedStatus.setObject(3, hospitalId);
+
+            updateRecord.execute();
+            deleteQueueItem.execute();
+            updateBedStatus.execute();
+            connection.commit();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            throw new FailedToAddException(Message.FAILED_TO_ADD_TO_HOSPITAL + (bedId - 1));
+        }
+    }
+
+    private List<QueuePatientSerialDAO> getFirstsInQueue() throws FailedToGetException {
+        try (Connection connection = Database.getConnection();
+             Statement statement = connection.createStatement();) {
+            ResultSet resultSet = statement.executeQuery(Query.QUEUE_TOP);
+
+            return mapResultSetToQueuePatientSerialDAO(resultSet);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            throw new FailedToGetException(Message.QUEUE_FAILED);
+        }
+    }
+
+    private List<QueuePatientSerialDAO> mapResultSetToQueuePatientSerialDAO(ResultSet resultSet) throws SQLException {
+        List<QueuePatientSerialDAO> queuePatientSerialDAOS = new ArrayList<>();
+        // queueid,serialnumber
+        while (resultSet.next()) {
+            QueuePatientSerialDAO queuePatientSerialDAO = new QueuePatientSerialDAO();
+            queuePatientSerialDAO.setQueueId((UUID) resultSet.getObject("queueid"));
+            queuePatientSerialDAO.setSerialNumber((UUID) resultSet.getObject("serialnumber"));
+            queuePatientSerialDAOS.add(queuePatientSerialDAO);
+        }
+        return queuePatientSerialDAOS;
+    }
+
     private List<RecordDAO> mapResultSetToRecordList(ResultSet resultSet) throws Exception {
         List<RecordDAO> recordList = new ArrayList<>();
 
@@ -170,15 +309,13 @@ public class RecordService {
         return recordList;
     }
 
-
-
     private List<Severity> mapResultSetToSeverityList(ResultSet resultSet) throws SQLException {
         List<Severity> severityList = new ArrayList<>();
 
         // severityid, level, doctorid, markeddate, serialnumber
         while (resultSet.next()) {
             Severity severity = new Severity();
-            severity.setSeverityId((UUID)resultSet.getObject("severityid"));
+            severity.setSeverityId((UUID) resultSet.getObject("severityid"));
             severity.setLevel(SeverityLevel.valueOf(resultSet.getString("level")));
             severity.setDoctorId((UUID) resultSet.getObject("doctorid"));
             severity.setMarkedDate(resultSet.getDate("markeddate"));

@@ -16,4 +16,9 @@ public class Message {
     public static final String RECORD_NOT_FOUND = "Record Not found";
     public static final String PERSON_NOT_FOUND = "Person not found";
     public static final String HOSPITAL_NOT_CREATED = "Hospital not created";
+    public static final String INVALID_INPUT = "Invalid input";
+    public static final String PERSON_NOT_CREATED = "Person not created";
+    public static final String QUEUE_FAILED = "Failed to get queue";
+    public static final String FAILED_TO_ADD_TO_HOSPITAL = "Failed to add to the hospital,Only added";
+    public static final String HOSPITAL_SUCCESS = "Hospital created successfully";
 }

@@ -1,10 +1,16 @@
 package com.sparkx;
 
 import com.google.gson.Gson;
+import com.sparkx.Exception.FailedToAddException;
+import com.sparkx.Exception.FailedToGetException;
 import com.sparkx.model.Severity;
+import com.sparkx.model.dao.QueueDetailsDAO;
+import com.sparkx.service.HospitalService;
 import com.sparkx.service.RecordService;
+import com.sparkx.util.DataInsert;
 
 import java.sql.SQLException;
+import java.util.UUID;
 
 
 public class RunApp {
@@ -179,11 +185,35 @@ public class RunApp {
 //            throwables.printStackTrace();
 //        }
 
-        try {
-            new RecordService().updateDischargeDate("60e996a8-a99f-4062-9573-ac4a4e4646a7");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            new RecordService().updateDischargeDate("60e996a8-a99f-4062-9573-ac4a4e4646a7");
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+
+//        try {
+//            QueueDetailsDAO queueDetailsDAO = new HospitalService().getQueueDetails();
+//            System.out.println(queueDetailsDAO.getDistrict());
+//            System.out.println(queueDetailsDAO.getLength());
+//        } catch (SQLException throwables) {
+//            throwables.printStackTrace();
+//        }
+
+//        try {
+//            new RecordService().addQueuePatientToHospital(UUID.fromString("94908c08-8799-4ee9-9ef8-c3c36e6f7ead"));
+//        } catch (FailedToGetException e) {
+//            e.printStackTrace();
+//        } catch (FailedToAddException e) {
+//            e.printStackTrace();
+//        } catch (SQLException throwables) {
+//            throwables.printStackTrace();
+//        }
+
+//        try {
+//            new RecordService().updateDischargeDate("0f200f2d-c76d-45f5-aad6-8b209c350ea2");
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
  /* int serverPort = 8000;
 
         HttpServer server = HttpServer.create(new InetSocketAddress(serverPort), 0);
