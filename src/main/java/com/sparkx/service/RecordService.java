@@ -3,12 +3,13 @@ package com.sparkx.service;
 import com.sparkx.Exception.NotCreatedException;
 import com.sparkx.Exception.NotFoundException;
 import com.sparkx.core.Database;
-import com.sparkx.dao.RecordDAO;
+import com.sparkx.model.dao.RecordDAO;
 import com.sparkx.model.*;
 import com.sparkx.model.Types.SeverityLevel;
 import com.sparkx.model.Types.StatusType;
 import com.sparkx.util.Message;
 import com.sparkx.util.Query;
+import com.sparkx.util.Util;
 import org.apache.log4j.Logger;
 
 import java.sql.*;
@@ -56,6 +57,12 @@ public class RecordService {
     }
 
     public Severity markSeverity(Severity severity) throws SQLException {
+        if (severity.getSeverityId() == null){
+            severity.setSeverityId(Util.getUUID());
+        }
+        if (severity.getMarkedDate() == null){
+            severity.setMarkedDate(Util.getDate());
+        }
         try(Connection connection = Database.getConnection();
         PreparedStatement statement = connection.prepareStatement(Query.SEVERITY_CREATE)) {
 //            severityid, level, doctorid, markeddate, serialnumber
@@ -80,13 +87,29 @@ public class RecordService {
             statement.setString(2,serialNumber);
             statement.execute();
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            logger.error(throwables.getMessage());
             throw throwables;
         }catch (Exception e){
             logger.error(e.getMessage());
             throw new NotFoundException(Message.RECORD_NOT_FOUND);
         }
     }
+
+    public void updateDischargeDate(String serialNumber) throws Exception {
+        try(Connection connection = Database.getConnection();
+            PreparedStatement statement = connection.prepareStatement(Query.RECORD_UPDATE_DISCHARGED)) {
+            statement.setDate(1, Util.getDate() );
+            statement.setString(2,serialNumber);
+            statement.execute();
+        } catch (SQLException throwables) {
+            logger.error(throwables.getMessage());
+            throw throwables;
+        }catch (Exception e){
+            logger.error(e.getMessage());
+            throw new NotFoundException(Message.RECORD_NOT_FOUND);
+        }
+    }
+
     public List<RecordDAO> getRecordsByPatientID(String patientId) throws Exception {
         try (Connection connection = Database.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(Query.RECORD_BY_PATIENT_ID)) {

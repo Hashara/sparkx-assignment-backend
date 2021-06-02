@@ -1,8 +1,9 @@
 package com.sparkx.service;
 
+import com.sparkx.Exception.NotCreatedException;
 import com.sparkx.Exception.NotFoundException;
 import com.sparkx.model.Bed;
-import com.sparkx.model.Queue;
+import com.sparkx.model.dao.QueueDetailsDAO;
 import com.sparkx.util.Message;
 import com.sparkx.util.Query;
 import com.sparkx.config.Config;
@@ -19,7 +20,7 @@ import java.util.UUID;
 public class HospitalService {
     Logger logger = Logger.getLogger(HospitalService.class);
 
-    public boolean createHospital(Hospital hospital) {
+    public boolean createHospital(Hospital hospital) throws NotCreatedException {
         try (Connection connection = Database.getConnection();
              PreparedStatement createHospital = connection.prepareStatement(Query.HOSPITAL_CREATE);
              PreparedStatement createBeds = connection.prepareStatement(Query.BEDS_CREATE)) {
@@ -44,14 +45,14 @@ public class HospitalService {
             createBeds.execute();
             connection.commit();
             return true;
-        } catch (SQLException throwables) {
+        } catch (Exception throwables) {
             logger.error(throwables.getMessage());
-            return false;
+            throw new NotCreatedException(Message.HOSPITAL_NOT_CREATED);
         }
 
     }
 
-    public List<Hospital>  getAllHospitals() {
+    public List<Hospital> getAllHospitals() {
         List<Hospital> hospitalList = new ArrayList<>();
         try (Connection connection = Database.getConnection();
              Statement statement = connection.createStatement()) {
@@ -66,7 +67,7 @@ public class HospitalService {
         return hospitalList;
     }
 
-    public List<Hospital> getHospitalByDistrict(String district){
+    public List<Hospital> getHospitalByDistrict(String district) {
         List<Hospital> hospitalList = new ArrayList<>();
         try (Connection connection = Database.getConnection();
              PreparedStatement statement = connection.prepareStatement(Query.HOSPITAL_BY_DISTRICT)) {
@@ -83,32 +84,32 @@ public class HospitalService {
 
     }
 
-    public Bed getNearestHospitalBed(int locationX, int locationY){
-        try(Connection connection = Database.getConnection();
-        PreparedStatement statement = connection.prepareStatement(Query.BED_NEAREST)) {
+    public Bed getNearestHospitalBed(int locationX, int locationY) {
+        try (Connection connection = Database.getConnection();
+             PreparedStatement statement = connection.prepareStatement(Query.BED_NEAREST)) {
             List<Bed> bedList;
 
-            statement.setInt(1,locationX);
-            statement.setInt(2,locationY);
+            statement.setInt(1, locationX);
+            statement.setInt(2, locationY);
             ResultSet resultSet = statement.executeQuery();
             bedList = mapResultSetToBedList(resultSet);
             return bedList.get(0);
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage());
-        }catch (IndexOutOfBoundsException e){
+        } catch (IndexOutOfBoundsException e) {
             logger.info(Message.NO_BEDS_AVAILABLE);
         }
         return null;
     }
 
     public int getQueueNumberByQueueId(UUID queueID) throws Exception {
-        try(Connection connection = Database.getConnection();
-        PreparedStatement statement = connection.prepareStatement(Query.QUEUE_NO_BY_ID)) {
+        try (Connection connection = Database.getConnection();
+             PreparedStatement statement = connection.prepareStatement(Query.QUEUE_NO_BY_ID)) {
 
-            statement.setObject(1,queueID);
+            statement.setObject(1, queueID);
             ResultSet resultSet = statement.executeQuery();
 
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 return resultSet.getInt("queue_number");
             }
 
@@ -119,11 +120,30 @@ public class HospitalService {
         throw new NotFoundException(Message.QUEUE_NOT_FOUND);
     }
 
+    public QueueDetailsDAO getQueueDetails() throws SQLException {
+        try (Connection connection = Database.getConnection();
+             Statement getDistrict = connection.createStatement();
+             Statement getLength = connection.createStatement();) {
+            ResultSet resultSetDistrict = getDistrict.executeQuery(Query.QUEUE_NEED_HOSPITAL);
+            resultSetDistrict.next();
+            QueueDetailsDAO queueDetailsDAO = new QueueDetailsDAO();
+            queueDetailsDAO.setDistrict(resultSetDistrict.getString("maxdis"));
+
+            ResultSet resultSetLength = getLength.executeQuery(Query.QUEUE_LENGTH);
+            resultSetLength.next();
+            queueDetailsDAO.setLength(resultSetLength.getInt("length"));
+
+            return queueDetailsDAO;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            throw throwables;
+        }
+    }
 
     private List<Hospital> mapResultSetToHospitalList(ResultSet resultSet) throws SQLException {
         List<Hospital> hospitalList = new ArrayList<>();
 
-        while ( resultSet.next() ) {
+        while (resultSet.next()) {
             Hospital h = new Hospital();
             h.setHospitalId((UUID) resultSet.getObject("hospitalid"));
             h.setName(resultSet.getString("name"));
@@ -136,11 +156,10 @@ public class HospitalService {
         return hospitalList;
     }
 
-
     private List<Bed> mapResultSetToBedList(ResultSet resultSet) throws SQLException {
         List<Bed> bedList = new ArrayList<>();
 
-        while (resultSet.next()){
+        while (resultSet.next()) {
             Bed bed = new Bed();
             bed.setBedId(resultSet.getString("bedid"));
             bed.setHospitalId((UUID) resultSet.getObject("hospitalid"));

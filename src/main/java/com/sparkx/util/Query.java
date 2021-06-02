@@ -56,11 +56,19 @@ public class Query {
     public static final String QUEUE_BY_ID = "SELECT queue_number, queueid, created_timestamp, patientid, district, location_x, location_y,serialNumber\n" +
             "\tFROM " + QUEUE_VIEW + " WHERE queueid = ?";
     public static final String QUEUE_NO_BY_ID = "SELECT queue_number FROM " + QUEUE_VIEW + " WHERE queueid = ?";
+    public static final String QUEUE_NEED_HOSPITAL = "SELECT district as maxdis\n" +
+            "FROM queue_view  GROUP BY district\n" +
+            "HAVING COUNT (district)=(\n" +
+            "    SELECT MAX(    maxdis)\n" +
+            "    FROM (\n" +
+            "             SELECT COUNT(district) AS maxdis FROM queue_view\n" +
+            "             GROUP BY district) AS maxcount)";
+    public static final String QUEUE_LENGTH = "SELECT count(queue_number) as length FROM queue_view";
 
     /* record queries */
     public static final String RECORD_CREATE = "INSERT INTO " + RECORD_TABLE + " (patientid, serialnumber, bedid, hospitalid, regdate, admitteddate, dischargeddate, queueid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     public static final String RECORD_UPDATE_ADMITTED = "UPDATE " + RECORD_TABLE + " SET admitteddate=? WHERE serialnumber = ?::uuid";
-    public static final String RECORD_UPDATE_DISCHARGED = "UPDATE " + RECORD_TABLE + " SET dischargeddatee=? WHERE serialnumber = ?";
+    public static final String RECORD_UPDATE_DISCHARGED = "UPDATE " + RECORD_TABLE + " SET dischargeddate=? WHERE serialnumber = ?::uuid";
     public static final String RECORD_BY_PATIENT_ID = "SELECT serialnumber, bedid, hospitalid, regdate, admitteddate, dischargeddate, queueid FROM " + RECORD_TABLE + " WHERE patientid = ?::uuid";
     public static final String RECORD_ACTIVE_BY_PATIENT_ID = "SELECT serialnumber, bedid, hospitalid, regdate, admitteddate, dischargeddate, queueid FROM " + RECORD_TABLE + " WHERE patientid = ?::uuid AND dischargeddate is NULL";
     public static final String RECORD_BY_HOSPITAL = "SELECT patientid,serialnumber, bedid, regdate, admitteddate, dischargeddate FROM " + RECORD_TABLE + " WHERE hospitalid = ?";
@@ -68,7 +76,7 @@ public class Query {
 
 
     /* severity queries */
-    public static final String SEVERITY_CREATE = "INSERT INTO " + SEVERITY_TABLE + "(severityid, level, doctorid, markeddate, serialnumber) VALUES (?, ?, ?, ?, ?)";
+    public static final String SEVERITY_CREATE = "INSERT INTO " + SEVERITY_TABLE + "(severityid, level, doctorid, markeddate, serialnumber) VALUES (?, ?::severitylevel, ?, ?, ?::uuid)";
     public static final String SEVERITY_BY_SERIAL_NUMBER = "SELECT severityid, level, doctorid, markeddate, serialnumber FROM " + SEVERITY_TABLE +
             " WHERE serialnumber = ?";
 

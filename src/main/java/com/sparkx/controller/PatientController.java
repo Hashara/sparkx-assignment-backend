@@ -4,11 +4,13 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sparkx.Exception.NotCreatedException;
 import com.sparkx.Exception.NotFoundException;
-import com.sparkx.dao.RecordDAO;
+import com.sparkx.model.dao.PatientRecordDAO;
+import com.sparkx.model.dao.RecordDAO;
 import com.sparkx.model.Patient;
 import com.sparkx.model.Record;
 import com.sparkx.service.PatientService;
 import com.sparkx.service.RecordService;
+import com.sparkx.util.Message;
 import com.sparkx.util.Util;
 import org.apache.log4j.Logger;
 
@@ -77,16 +79,22 @@ public class PatientController extends Controller {
     }
 
 
-    private void registerPatient(HttpServletRequest req, HttpServletResponse resp) throws IOException, NotCreatedException {
+    private void registerPatient(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         String jsonResponse = getjsonRequest(req);
         Gson gson = new GsonBuilder()
                 .setDateFormat("yyyy-mm-dd").create();
         Patient patient = gson.fromJson(jsonResponse, Patient.class);
 
         patient.setPassword(Util.hashPassword(patient.getPassword()));
-        patientService.addPatient(patient);
 
-        sendResponse(gson.toJson(patient), resp, HttpServletResponse.SC_CREATED);
+        try {
+            PatientRecordDAO patientDao = patientService.addPatient(patient);
+            sendResponse(gson.toJson(patientDao), resp, HttpServletResponse.SC_CREATED);
+
+        } catch (NotCreatedException e) {
+            sendMessageResponse(Message.REGISTER_FAILED, resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+
     }
 
     private void getPatientById(HttpServletRequest req, HttpServletResponse resp) throws IOException, NotFoundException {
