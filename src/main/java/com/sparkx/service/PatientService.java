@@ -4,6 +4,8 @@ import com.sparkx.Exception.NotCreatedException;
 import com.sparkx.Exception.NotFoundException;
 import com.sparkx.model.*;
 import com.sparkx.model.Types.RoleType;
+import com.sparkx.model.dao.PatientRecordDAO;
+import com.sparkx.model.dao.RecordDAO;
 import com.sparkx.util.Message;
 import com.sparkx.util.Query;
 import com.sparkx.core.Database;
@@ -19,7 +21,7 @@ import java.util.UUID;
 public class PatientService {
     Logger logger = Logger.getLogger(PatientService.class);
 
-    public Patient addPatient(Patient patient) throws NotCreatedException {
+    public PatientRecordDAO addPatient(Patient patient) throws Exception {
 
         if (patient.getPatientId() == null) {
             patient.setPatientId(Util.getUUID());
@@ -53,10 +55,18 @@ public class PatientService {
             createPatient.execute();
             connection.commit();
             patient.setPassword(null);
-            return patient;
+
+            PatientRecordDAO patientDAO = new PatientRecordDAO();
+            patientDAO.setPatient(patient);
+            patientDAO.setNewRecord(addRecord(patient));
+
+            return patientDAO;
         } catch (SQLException throwables) {
             logger.error(throwables.getMessage());
             throw new NotCreatedException(throwables.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
         }
     }
 

@@ -1,5 +1,6 @@
 package com.sparkx.util;
 
+import com.sparkx.Exception.NotCreatedException;
 import com.sparkx.model.Hospital;
 import com.sparkx.service.HospitalService;
 
@@ -7,7 +8,7 @@ import java.util.List;
 
 public class DataInsert {
 
-    public void insert(){
+    public void insert() throws NotCreatedException {
         Hospital h1 = new Hospital();
         h1.setName("Hospital1");
         h1.setDistrict("District1");

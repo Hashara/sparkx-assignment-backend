@@ -56,6 +56,14 @@ public class Query {
     public static final String QUEUE_BY_ID = "SELECT queue_number, queueid, created_timestamp, patientid, district, location_x, location_y,serialNumber\n" +
             "\tFROM " + QUEUE_VIEW + " WHERE queueid = ?";
     public static final String QUEUE_NO_BY_ID = "SELECT queue_number FROM " + QUEUE_VIEW + " WHERE queueid = ?";
+    public static final String QUEUE_NEED_HOSPITAL = "SELECT district as maxdis\n" +
+            "FROM queue_view  GROUP BY district\n" +
+            "HAVING COUNT (district)=(\n" +
+            "    SELECT MAX(    maxdis)\n" +
+            "    FROM (\n" +
+            "             SELECT COUNT(district) AS maxdis FROM queue_view\n" +
+            "             GROUP BY district) AS maxcount)";
+    public static final String QUEUE_LENGTH = "SELECT count(queue_number) as length FROM queue_view";
 
     /* record queries */
     public static final String RECORD_CREATE = "INSERT INTO " + RECORD_TABLE + " (patientid, serialnumber, bedid, hospitalid, regdate, admitteddate, dischargeddate, queueid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
