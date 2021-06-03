@@ -10,7 +10,7 @@ import com.sparkx.model.dao.NewHospitalDAO;
 import com.sparkx.model.dao.QueueDetailsDAO;
 import com.sparkx.util.Message;
 import com.sparkx.util.Query;
-import com.sparkx.config.Config;
+import com.sparkx.core.config.Config;
 import com.sparkx.core.Database;
 import com.sparkx.model.Hospital;
 import com.sparkx.model.Types.StatusType;
@@ -150,6 +150,7 @@ public class HospitalService {
         }
         throw new NotFoundException(Message.QUEUE_NOT_FOUND);
     }
+
 
     public QueueDetailsDAO getQueueDetails() throws SQLException {
         try (Connection connection = Database.getConnection();

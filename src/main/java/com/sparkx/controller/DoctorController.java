@@ -41,7 +41,6 @@ public class DoctorController extends Controller {
     private void markSeverity(HttpServletRequest req, HttpServletResponse resp) {
         String jsonResponse = null;
         // todo: check hospital id of record = doctor's hospital id
-        // todo: role = doctor| director
         try {
             jsonResponse = getjsonRequest(req);
             Gson gson = new Gson();

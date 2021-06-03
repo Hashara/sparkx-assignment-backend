@@ -21,4 +21,5 @@ public class Message {
     public static final String QUEUE_FAILED = "Failed to get queue";
     public static final String FAILED_TO_ADD_TO_HOSPITAL = "Failed to add to the hospital,Only added";
     public static final String HOSPITAL_SUCCESS = "Hospital created successfully";
+    public static final String FORBIDDEN = "Forbidden";
 }

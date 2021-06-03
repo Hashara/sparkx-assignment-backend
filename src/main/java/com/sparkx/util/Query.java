@@ -1,6 +1,6 @@
 package com.sparkx.util;
 
-import com.sparkx.config.Config;
+import com.sparkx.core.config.Config;
 
 public class Query {
 
@@ -27,6 +27,7 @@ public class Query {
     public static final String PERSON_ALL = "SELECT userid, email, first_name, last_name, hospitalid, role FROM " + PERSON_TABLE;
     public static final String PERSON_BY_ID = PERSON_ALL + " WHERE userid = ?::uuid";
     public static final String PERSON_BY_ROLE = PERSON_ALL + " WHERE role=?";
+    public static final String PERSON_BY_EMAIL = "SELECT userid, email, first_name, last_name, hospitalid, role, password FROM " + PERSON_TABLE + " WHERE email=?";
 
     /* patient queries */
     public static final String PATIENT_CREATE = "INSERT INTO " + PATIENT_TABLE + " ( patientid, district, location_x, location_y, gender, contact, birthdate) VALUES (?, ?, ?, ?, ?::genderTypes, ?, ?)";

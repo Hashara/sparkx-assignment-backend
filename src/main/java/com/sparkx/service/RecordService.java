@@ -238,6 +238,29 @@ public class RecordService {
         }
     }
 
+    public void getTodayStatsCountryLevel() {
+        // todo: distinct patientId serial admittedDate = today, dischargedDat = today from record
+        // todo: check patient death = today
+    }
+
+    public void getTodayStatsDistrictLevel(String district) {
+        // todo: distinct patientId serial admittedDate = today , dischargedDat = today patient = district
+        // todo:  check patient death = today district = district
+
+    }
+
+    public void getTodayStatsHospitalLevel(UUID hospitalId) {
+        // todo: distinct patientId serial admittedDate = today , dischargedDat = today patient = district
+        // todo:  check patient death = today join record hospitalid = hospital id dischargeDate = null
+    }
+
+    public void getOverAllStats() {
+        // todo: check patient death !=null
+        // todo: number of patients
+        // todo: patients join records where dischargedDate == null
+    }
+
+
     private void addToBed(QueuePatientSerialDAO queuePatientSerialDAO, Integer bedId, UUID hospitalId) throws FailedToAddException {
         try (Connection connection = Database.getConnection();
              PreparedStatement updateRecord = connection.prepareStatement(Query.RECORD_UPDATE);
