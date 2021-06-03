@@ -1,9 +1,16 @@
 package com.sparkx.controller;
 
 import com.google.gson.Gson;
+import com.sparkx.Exception.FailedToAddException;
+import com.sparkx.Exception.FailedToGetException;
+import com.sparkx.Exception.InvalidInputException;
+import com.sparkx.Exception.NotCreatedException;
+import com.sparkx.model.dao.NewHospitalDAO;
 import com.sparkx.model.dao.QueueDetailsDAO;
 import com.sparkx.service.HospitalService;
+import com.sparkx.service.PersonService;
 import com.sparkx.service.RecordService;
+import com.sparkx.util.Message;
 import org.apache.log4j.Logger;
 
 import javax.servlet.annotation.WebServlet;
@@ -17,12 +24,14 @@ public class MoHController extends Controller {
 
     private HospitalService hospitalService;
     private RecordService recordService;
+    private PersonService personService;
     private Logger logger;
 
 
     public void init() {
         hospitalService = new HospitalService();
         recordService = new RecordService();
+        personService = new PersonService();
         logger = Logger.getLogger(MoHController.class);
     }
 
@@ -38,7 +47,8 @@ public class MoHController extends Controller {
                     break;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
+            sendMessageResponse(e.getMessage(), resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -54,28 +64,31 @@ public class MoHController extends Controller {
                     break;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
+            sendMessageResponse(e.getMessage(), resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 
-    private void addHospital(HttpServletRequest req, HttpServletResponse resp) {
+    private void addHospital(HttpServletRequest req, HttpServletResponse resp) throws InvalidInputException, NotCreatedException, SQLException, FailedToAddException, FailedToGetException {
+        String jsonResponse;
         try {
-            String jsonResponse = getjsonRequest(req);
+            jsonResponse = getjsonRequest(req);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(Message.INVALID_INPUT);
+            throw new InvalidInputException(Message.INVALID_INPUT);
         }
         Gson gson = new Gson();
+        NewHospitalDAO newHospitalDAO = gson.fromJson(jsonResponse, NewHospitalDAO.class);
+        hospitalService.addNewHospital(newHospitalDAO);
+        sendMessageResponse(Message.HOSPITAL_SUCCESS, resp, HttpServletResponse.SC_CREATED);
     }
 
-    // todo - POST - add hospital
+
     private void getQueueDetails(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        // todo: check role = MOH
         try {
             QueueDetailsDAO queueDetailsDAO = hospitalService.getQueueDetails();
-//            if (queueDetailsDAO.getLength() == 0){
             Gson gson = new Gson();
             sendResponse(gson.toJson(queueDetailsDAO), resp, HttpServletResponse.SC_OK);
-//            }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
             sendMessageResponse(throwables.getMessage(), resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

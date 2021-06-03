@@ -9,12 +9,39 @@
         <servlet-class>com.sparkx.controller.PatientController</servlet-class>
     </servlet>
 -->
-<!--
-    <servlet-mapping>
-        <servlet-name>PatientServlet</servlet-name>
+    <!--
+        <servlet-mapping>
+            <servlet-name>PatientServlet</servlet-name>
+            <url-pattern>/patient</url-pattern>
+        </servlet-mapping>
+    -->
+    <filter-mapping>
+        <filter-name>authFilter</filter-name>
+        <url-pattern>/doctor</url-pattern>
+        <url-pattern>/moh</url-pattern>
+        <url-pattern>/director</url-pattern>
         <url-pattern>/patient</url-pattern>
-    </servlet-mapping>
--->
-
-
+        <url-pattern>/person</url-pattern>
+        <url-pattern>/staff</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>doctorFilter</filter-name>
+        <url-pattern>/doctor</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>mohFilter</filter-name>
+        <url-pattern>/moh</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>patientFilter</filter-name>
+        <url-pattern>/patient</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>staffFilter</filter-name>
+        <url-pattern>/staff</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>directorFilter</filter-name>
+        <url-pattern>/director</url-pattern>
+    </filter-mapping>
 </web-app>

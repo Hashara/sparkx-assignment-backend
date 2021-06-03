@@ -11,18 +11,15 @@ public class Util {
         return BCrypt.hashpw(plainTextPassword, BCrypt.gensalt());
     }
 
-    public static void checkPass(String plainPassword, String hashedPassword) {
-        if (BCrypt.checkpw(plainPassword, hashedPassword))
-            System.out.println("The password matches.");
-        else
-            System.out.println("The password does not match.");
+    public static boolean checkPassword(String plainPassword, String hashedPassword) {
+        return BCrypt.checkpw(plainPassword, hashedPassword);
     }
 
     public static UUID getUUID() {
         return UUID.randomUUID();
     }
 
-    public static Date getDate(){
+    public static Date getDate() {
         long millis = System.currentTimeMillis();
         return new Date(millis);
     }

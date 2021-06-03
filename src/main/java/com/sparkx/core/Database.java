@@ -1,6 +1,6 @@
 package com.sparkx.core;
 
-import com.sparkx.config.DBConfig;
+import com.sparkx.core.config.DBConfig;
 import org.apache.commons.dbcp2.BasicDataSource;
 
 import java.sql.Connection;

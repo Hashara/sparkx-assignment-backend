@@ -42,7 +42,7 @@ public class HospitalStaffController extends Controller {
 
     private void updateAdmitDateOfRecord(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         String serialNumber = req.getParameter("serialNumber");
-        // todo: check role = hospitalStaff and hospitalId equal?? and check admitted date == null
+        // todo:  hospitalId equal?? and check admitted date == null
         try {
             recordService.updateAdmitDate(serialNumber);
             sendMessageResponse(Message.RECORD_UPDATED_SUCCESSFULLY, resp, HttpServletResponse.SC_OK);

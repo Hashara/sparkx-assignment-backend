@@ -1,5 +1,7 @@
 package com.sparkx.util;
 
+import com.sparkx.core.config.Config;
+
 public class Query {
 
     private Query() {
@@ -25,6 +27,7 @@ public class Query {
     public static final String PERSON_ALL = "SELECT userid, email, first_name, last_name, hospitalid, role FROM " + PERSON_TABLE;
     public static final String PERSON_BY_ID = PERSON_ALL + " WHERE userid = ?::uuid";
     public static final String PERSON_BY_ROLE = PERSON_ALL + " WHERE role=?";
+    public static final String PERSON_BY_EMAIL = "SELECT userid, email, first_name, last_name, hospitalid, role, password FROM " + PERSON_TABLE + " WHERE email=?";
 
     /* patient queries */
     public static final String PATIENT_CREATE = "INSERT INTO " + PATIENT_TABLE + " ( patientid, district, location_x, location_y, gender, contact, birthdate) VALUES (?, ?, ?, ?, ?::genderTypes, ?, ?)";
@@ -64,6 +67,8 @@ public class Query {
             "             SELECT COUNT(district) AS maxdis FROM queue_view\n" +
             "             GROUP BY district) AS maxcount)";
     public static final String QUEUE_LENGTH = "SELECT count(queue_number) as length FROM queue_view";
+    public static final String QUEUE_TOP = "SELECT queueid,serialnumber FROM " + QUEUE_VIEW + " WHERE queue_number <= " + Config.BEDS_PER_HOSPITAL;
+    public static final String QUEUE_FIRST = "SELECT queueid,serialnumber FROM " + QUEUE_VIEW + " WHERE queue_number = 1";
 
     /* record queries */
     public static final String RECORD_CREATE = "INSERT INTO " + RECORD_TABLE + " (patientid, serialnumber, bedid, hospitalid, regdate, admitteddate, dischargeddate, queueid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
@@ -72,7 +77,8 @@ public class Query {
     public static final String RECORD_BY_PATIENT_ID = "SELECT serialnumber, bedid, hospitalid, regdate, admitteddate, dischargeddate, queueid FROM " + RECORD_TABLE + " WHERE patientid = ?::uuid";
     public static final String RECORD_ACTIVE_BY_PATIENT_ID = "SELECT serialnumber, bedid, hospitalid, regdate, admitteddate, dischargeddate, queueid FROM " + RECORD_TABLE + " WHERE patientid = ?::uuid AND dischargeddate is NULL";
     public static final String RECORD_BY_HOSPITAL = "SELECT patientid,serialnumber, bedid, regdate, admitteddate, dischargeddate FROM " + RECORD_TABLE + " WHERE hospitalid = ?";
-
+    public static final String RECORD_UPDATE = "UPDATE " + RECORD_TABLE + " SET queueId = null, hospitalid =?, bedid=? WHERE serialNumber=?";
+    public static final String RECORD_BED_BY_SERIAL_NUMBER = "SELECT bedid, hospitalid FROM " + RECORD_TABLE + " WHERE serialnumber = ?::uuid";
 
 
     /* severity queries */

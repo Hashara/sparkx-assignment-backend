@@ -39,7 +39,7 @@ public class DirectorController extends Controller{
     private void dischargePatient(HttpServletRequest req, HttpServletResponse resp) throws Exception{
         String serialNumber = req.getParameter("serialNumber");
 
-        // todo: check tole = director , serial number discharged date == null and hospital id  = director hospital id
+        // todo: serial number discharged date == null and hospital id  = director hospital id
         try {
             recordService.updateDischargeDate(serialNumber);
             sendMessageResponse(Message.RECORD_UPDATED_SUCCESSFULLY, resp, HttpServletResponse.SC_OK);

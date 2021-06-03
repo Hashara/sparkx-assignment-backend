@@ -6,6 +6,7 @@ import com.sparkx.util.Query;
 import com.sparkx.core.Database;
 import com.sparkx.model.Person;
 import com.sparkx.model.Types.RoleType;
+import com.sparkx.util.Util;
 import org.apache.log4j.Logger;
 
 import java.sql.Connection;
@@ -72,7 +73,23 @@ public class PersonService {
         return person;
     }
 
-    //todo: password compare
+    public Person authenticate(String email, String password) {
+        try (Connection connection = Database.getConnection();
+             PreparedStatement statement = connection.prepareStatement(Query.PERSON_BY_EMAIL)) {
+            statement.setString(1, email);
+
+            ResultSet resultSet = statement.executeQuery();
+            Person person = mapResultSetToPerson(resultSet).get(0);
+            if (Util.checkPassword(password, person.getPassword())) {
+                return person;
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } catch (Exception e) {
+
+        }
+        return null;
+    }
 
     private List<Person> mapResultSetToPerson(ResultSet resultSet) throws SQLException {
         List<Person> personList = null;
@@ -87,6 +104,10 @@ public class PersonService {
             person.setLast_name(resultSet.getString("last_name"));
             person.setHospitalId((UUID) resultSet.getObject("hospitalid"));
             person.setRole(RoleType.valueOf(resultSet.getString("role")));
+            try {
+                person.setPassword(resultSet.getString("password"));
+            } catch (Exception e) {
+            }
             personList.add(person);
         }
         return personList;

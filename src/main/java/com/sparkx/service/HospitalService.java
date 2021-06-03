@@ -1,15 +1,20 @@
 package com.sparkx.service;
 
+import com.sparkx.Exception.FailedToAddException;
+import com.sparkx.Exception.FailedToGetException;
 import com.sparkx.Exception.NotCreatedException;
 import com.sparkx.Exception.NotFoundException;
 import com.sparkx.model.Bed;
+import com.sparkx.model.Types.RoleType;
+import com.sparkx.model.dao.NewHospitalDAO;
 import com.sparkx.model.dao.QueueDetailsDAO;
 import com.sparkx.util.Message;
 import com.sparkx.util.Query;
-import com.sparkx.config.Config;
+import com.sparkx.core.config.Config;
 import com.sparkx.core.Database;
 import com.sparkx.model.Hospital;
 import com.sparkx.model.Types.StatusType;
+import com.sparkx.util.Util;
 import org.apache.log4j.Logger;
 
 import java.sql.*;
@@ -20,7 +25,34 @@ import java.util.UUID;
 public class HospitalService {
     Logger logger = Logger.getLogger(HospitalService.class);
 
-    public boolean createHospital(Hospital hospital) throws NotCreatedException {
+    public void addNewHospital(NewHospitalDAO newHospitalDAO) throws NotCreatedException, SQLException, FailedToAddException, FailedToGetException {
+        UUID hospitalId = Util.getUUID();
+        newHospitalDAO.getHospital().setHospitalId(hospitalId);
+        newHospitalDAO.getDirector().setHospitalId(hospitalId);
+        newHospitalDAO.getDirector().setRole(RoleType.Director);
+        newHospitalDAO.getDirector().setPassword(Util.hashPassword(newHospitalDAO.getDirector().getPassword()));
+        try {
+            createHospital(newHospitalDAO.getHospital());
+        } catch (NotCreatedException e) {
+            logger.error(Message.HOSPITAL_NOT_CREATED);
+            throw new NotCreatedException(Message.HOSPITAL_NOT_CREATED);
+        }
+
+        try {
+            new PersonService().createPerson(newHospitalDAO.getDirector());
+        } catch (Exception e) {
+            logger.error(Message.PERSON_NOT_CREATED);
+            throw new NotCreatedException(Message.PERSON_NOT_CREATED);
+        }
+
+        try {
+            new RecordService().addQueuePatientToHospital(hospitalId);
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    public void createHospital(Hospital hospital) throws NotCreatedException {
         try (Connection connection = Database.getConnection();
              PreparedStatement createHospital = connection.prepareStatement(Query.HOSPITAL_CREATE);
              PreparedStatement createBeds = connection.prepareStatement(Query.BEDS_CREATE)) {
@@ -44,7 +76,6 @@ public class HospitalService {
             }
             createBeds.execute();
             connection.commit();
-            return true;
         } catch (Exception throwables) {
             logger.error(throwables.getMessage());
             throw new NotCreatedException(Message.HOSPITAL_NOT_CREATED);
@@ -119,6 +150,7 @@ public class HospitalService {
         }
         throw new NotFoundException(Message.QUEUE_NOT_FOUND);
     }
+
 
     public QueueDetailsDAO getQueueDetails() throws SQLException {
         try (Connection connection = Database.getConnection();

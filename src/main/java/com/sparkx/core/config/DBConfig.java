@@ -1,4 +1,4 @@
-package com.sparkx.config;
+package com.sparkx.core.config;
 
 public class DBConfig {
     private DBConfig(){}
