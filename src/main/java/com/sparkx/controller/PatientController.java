@@ -62,9 +62,6 @@ public class PatientController extends Controller {
             String cmd = req.getParameter("cmd");
 
             switch (cmd) {
-                case "REGISTER":
-                    registerPatient(req, resp);
-                    break;
                 case "PATIENT_RECORD":
                     createRecord(req, resp);
                     break;
@@ -78,24 +75,6 @@ public class PatientController extends Controller {
         }
     }
 
-
-    private void registerPatient(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        String jsonResponse = getjsonRequest(req);
-        Gson gson = new GsonBuilder()
-                .setDateFormat("yyyy-mm-dd").create();
-        Patient patient = gson.fromJson(jsonResponse, Patient.class);
-
-        patient.setPassword(Util.hashPassword(patient.getPassword()));
-
-        try {
-            PatientRecordDAO patientDao = patientService.addPatient(patient);
-            sendResponse(gson.toJson(patientDao), resp, HttpServletResponse.SC_CREATED);
-
-        } catch (NotCreatedException e) {
-            sendMessageResponse(Message.REGISTER_FAILED, resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        }
-
-    }
 
     private void getPatientById(HttpServletRequest req, HttpServletResponse resp) throws IOException, NotFoundException {
         // todo: check id = user id or hospitalid = current record id

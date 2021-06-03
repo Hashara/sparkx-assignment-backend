@@ -26,9 +26,9 @@ public class PersonController extends Controller {
             String cmd = req.getParameter("cmd");
 
             switch (cmd) {
-                case "REGISTER":
-                    registerPerson(req, resp);
-                    break;
+//                case "REGISTER":
+//                    registerPerson(req, resp);
+//                    break;
             }
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -52,24 +52,11 @@ public class PersonController extends Controller {
         }
     }
 
-    private void registerPerson(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        String jsonResponse = getjsonRequest(req);
-        Gson gson = new Gson();
-        Person person = gson.fromJson(jsonResponse, Person.class);
-
-        person.setPassword(Util.hashPassword(person.getPassword()));
-
-        // todo: check role != patient, {role=hosptal staff|director|doctor hosptalId != null}, {role = MoH and hospitalId ==null
-        person = personService.createPerson(person);
-        sendResponse(gson.toJson(person), resp, HttpServletResponse.SC_CREATED);
-
-    }
-
     private void getPersonById(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         String personId = req.getParameter("id");
         Person person = personService.getPersonById(personId);
 
-        // todo: check person role == patient
+        // todo: check person role == patient and id= patientId | role = staff|doctor|director
         Gson gson = new Gson();
         sendResponse(gson.toJson(person), resp, HttpServletResponse.SC_OK);
 
