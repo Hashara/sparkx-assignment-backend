@@ -345,10 +345,33 @@ public class RecordService {
         }
     }
 
-    public void getOverAllStats() {
-        // todo: check patient death !=null
-        // todo: number of patients
-        // todo: patients join records where dischargedDate == null
+    public StatsDAO getOverAllStats() throws SQLException {
+        try (Connection connection = Database.getConnection();
+             Statement totalCases = connection.createStatement();
+             Statement totalRecovered = connection.createStatement();
+             Statement totalDeaths = connection.createStatement();
+        ) {
+            ResultSet newCaseResult = totalCases.executeQuery(Query.TOTAL_CASES);
+            ResultSet recoveredResult = totalRecovered.executeQuery(Query.TOTAL_RECOVER);
+            ResultSet deathResult = totalDeaths.executeQuery(Query.TOTAL_DEATHS);
+
+            StatsDAO statsDAO = new StatsDAO();
+
+            newCaseResult.next();
+            //newcases
+            statsDAO.setNewCases(newCaseResult.getInt(1));
+
+            //recovered
+            recoveredResult.next();
+            statsDAO.setRecovered(recoveredResult.getInt(1));
+            //deaths
+            deathResult.next();
+            statsDAO.setDeaths(deathResult.getInt(1));
+            return statsDAO;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            throw throwables;
+        }
     }
 
     private StatsDAO mapToResultSetsToStatsDAO(PreparedStatement newCases, PreparedStatement recovered, PreparedStatement deaths) throws SQLException {

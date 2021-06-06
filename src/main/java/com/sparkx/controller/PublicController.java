@@ -21,7 +21,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 
 @WebServlet(name = "PublicServlet", value = "/public")
 public class PublicController extends Controller {
@@ -71,11 +70,20 @@ public class PublicController extends Controller {
                 case "DAILY_HOSPITAL_LEVEL":
                     dailyHospitalLevel(req, resp);
                     break;
+                case "OVERALL_STATUS":
+                    overallStatus(req, resp);
+                    break;
             }
         } catch (Exception e) {
             logger.error(e.getMessage());
             sendMessageResponse(e.getMessage(), resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
+    }
+
+    private void overallStatus(HttpServletRequest req, HttpServletResponse resp) throws SQLException {
+        StatsDAO statsDAO = recordService.getOverAllStats();
+        Gson gson = new Gson();
+        sendResponse(gson.toJson(statsDAO), resp, HttpServletResponse.SC_OK);
     }
 
     private void dailyHospitalLevel(HttpServletRequest req, HttpServletResponse resp) throws SQLException {

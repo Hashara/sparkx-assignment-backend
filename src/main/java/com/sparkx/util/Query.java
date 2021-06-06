@@ -101,6 +101,9 @@ public class Query {
             + " JOIN " + PATIENT_TABLE + " ON " + RECORD_TABLE + ".patientId = " + PATIENT_TABLE
             + ".patientId WHERE district =? AND closed=?";
 
+    public static final String TOTAL_CASES = "SELECT COUNT( DISTINCT serialnumber) FROM " + RECORD_TABLE;
+    public static final String TOTAL_RECOVER = "SELECT COUNT( DISTINCT serialnumber) FROM " + RECORD_TABLE + " WHERE dischargeddate IS NOT NULL";
+    public static final String TOTAL_DEATHS = "SELECT COUNT( DISTINCT serialnumber) FROM " + RECORD_TABLE + " WHERE closed IS NOT NULL";
 
     /* severity queries */
     public static final String SEVERITY_CREATE = "INSERT INTO " + SEVERITY_TABLE + "(severityid, level, doctorid, markeddate, serialnumber) VALUES (?, ?::severitylevel, ?, ?, ?::uuid)";
