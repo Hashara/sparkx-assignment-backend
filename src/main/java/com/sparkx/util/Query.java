@@ -34,11 +34,12 @@ public class Query {
     public static final String PATIENT_ALL = "SELECT patientid, district, location_x, location_y, gender, contact, birthdate, email, first_name,last_name FROM " + PATIENT_TABLE + " join " + PERSON_TABLE + " on " + PATIENT_TABLE + ".patientId = " + PERSON_TABLE + ".userId";
     public static final String PATIENT_BY_PATIENT_ID = PATIENT_ALL + " WHERE patientid = ?::uuid";
     public static final String PATIENT_BY_USER_ID = PATIENT_ALL + " WHERE userid = ?";
-    public static final String PATIENTS_BY_HOSPITAL_ID = "SELECT serialnumber, bedid, " + RECORD_TABLE+".hospitalid, regdate, admitteddate, queueid," + PATIENT_TABLE +
+    public static final String PATIENTS_BY_HOSPITAL_ID = "SELECT serialnumber, bedid, " + RECORD_TABLE + ".hospitalid, regdate, admitteddate, queueid," + PATIENT_TABLE +
             ".patientid, district, location_x, location_y, gender, contact, birthdate, email, first_name,last_name " +
-            " FROM " + PERSON_TABLE + " join " +  PATIENT_TABLE+ " on " + PATIENT_TABLE + ".patientId = " + PERSON_TABLE + ".userId"
-            + " JOIN " + RECORD_TABLE +  " on "  + PATIENT_TABLE + ".patientId = " + RECORD_TABLE +  ".patientId " +
-            " WHERE " + RECORD_TABLE +".hospitalid = ?::uuid AND dischargeddate is NULL";
+            " FROM " + PERSON_TABLE + " join " + PATIENT_TABLE + " on " + PATIENT_TABLE + ".patientId = " + PERSON_TABLE + ".userId"
+            + " JOIN " + RECORD_TABLE + " on " + PATIENT_TABLE + ".patientId = " + RECORD_TABLE + ".patientId " +
+            " WHERE " + RECORD_TABLE + ".hospitalid = ?::uuid AND dischargeddate is NULL";
+    public static final String PATIENT_DEATH = "UPDATE " + PATIENT_TABLE + " SET death=? WHERE patientid=?::uuid";
 
 
     /* bed queries */
@@ -75,11 +76,34 @@ public class Query {
     public static final String RECORD_UPDATE_ADMITTED = "UPDATE " + RECORD_TABLE + " SET admitteddate=? WHERE serialnumber = ?::uuid";
     public static final String RECORD_UPDATE_DISCHARGED = "UPDATE " + RECORD_TABLE + " SET dischargeddate=? WHERE serialnumber = ?::uuid";
     public static final String RECORD_BY_PATIENT_ID = "SELECT serialnumber, bedid, hospitalid, regdate, admitteddate, dischargeddate, queueid FROM " + RECORD_TABLE + " WHERE patientid = ?::uuid";
-    public static final String RECORD_ACTIVE_BY_PATIENT_ID = "SELECT serialnumber, bedid, hospitalid, regdate, admitteddate, dischargeddate, queueid FROM " + RECORD_TABLE + " WHERE patientid = ?::uuid AND dischargeddate is NULL";
+    public static final String RECORD_ACTIVE_BY_PATIENT_ID = "SELECT serialnumber, bedid, hospitalid, regdate, admitteddate, dischargeddate, queueid FROM " + RECORD_TABLE + " WHERE patientid = ?::uuid AND dischargeddate is NULL AND closed is null";
     public static final String RECORD_BY_HOSPITAL = "SELECT patientid,serialnumber, bedid, regdate, admitteddate, dischargeddate FROM " + RECORD_TABLE + " WHERE hospitalid = ?";
     public static final String RECORD_UPDATE = "UPDATE " + RECORD_TABLE + " SET queueId = null, hospitalid =?, bedid=? WHERE serialNumber=?";
     public static final String RECORD_BED_BY_SERIAL_NUMBER = "SELECT bedid, hospitalid FROM " + RECORD_TABLE + " WHERE serialnumber = ?::uuid";
+    public static final String RECORD_CLOSE = "UPDATE " + RECORD_TABLE + " SET closed =? WHERE patientId=?::uuid AND dischargeddate is NULL";
 
+    /* daily status*/
+    public static final String DAILY_NEW_CASES_COUNTRY_LEVEL = "SELECT COUNT(serialnumber) AS newcases FROM " + RECORD_TABLE + " WHERE regdate=?";
+    public static final String DAILY_RECOVERED_COUNTRY_LEVEL = "SELECT COUNT(serialnumber) AS recovered FROM " + RECORD_TABLE + " WHERE dischargeddate=?";
+    public static final String DAILY_DEATHS_COUNTRY_LEVEL = "SELECT COUNT(serialnumber) AS deaths FROM " + RECORD_TABLE + " WHERE closed=?";
+
+    public static final String DAILY_NEW_CASES_HOSPITAL_LEVEL = DAILY_NEW_CASES_COUNTRY_LEVEL + " AND hospitalid=?::uuid";
+    public static final String DAILY_RECOVERED_HOSPITAL_LEVEL = DAILY_RECOVERED_COUNTRY_LEVEL + " AND hospitalid=?::uuid";
+    public static final String DAILY_DEATHS_HOSPITAL_LEVEL = DAILY_DEATHS_COUNTRY_LEVEL + " AND hospitalid=?::uuid";
+
+    public static final String DAILY_NEW_CASES_DISTRICT_LEVEL = "SELECT COUNT(serialnumber) AS newcases FROM " + RECORD_TABLE
+            + " JOIN " + PATIENT_TABLE + " ON " + RECORD_TABLE + ".patientId = " + PATIENT_TABLE
+            + ".patientId WHERE district =? AND regdate=?";
+    public static final String DAILY_RECOVERED_DISTRICT_LEVEL = "SELECT COUNT(serialnumber) AS recovered FROM " + RECORD_TABLE
+            + " JOIN " + PATIENT_TABLE + " ON " + RECORD_TABLE + ".patientId = " + PATIENT_TABLE
+            + ".patientId WHERE district =? AND dischargeddate=?";
+    public static final String DAILY_DEATHS_DISTRICT_LEVEL = "SELECT COUNT(serialnumber) AS deaths FROM " + RECORD_TABLE
+            + " JOIN " + PATIENT_TABLE + " ON " + RECORD_TABLE + ".patientId = " + PATIENT_TABLE
+            + ".patientId WHERE district =? AND closed=?";
+
+    public static final String TOTAL_CASES = "SELECT COUNT( DISTINCT serialnumber) FROM " + RECORD_TABLE;
+    public static final String TOTAL_RECOVER = "SELECT COUNT( DISTINCT serialnumber) FROM " + RECORD_TABLE + " WHERE dischargeddate IS NOT NULL";
+    public static final String TOTAL_DEATHS = "SELECT COUNT( DISTINCT serialnumber) FROM " + RECORD_TABLE + " WHERE closed IS NOT NULL";
 
     /* severity queries */
     public static final String SEVERITY_CREATE = "INSERT INTO " + SEVERITY_TABLE + "(severityid, level, doctorid, markeddate, serialnumber) VALUES (?, ?::severitylevel, ?, ?, ?::uuid)";
