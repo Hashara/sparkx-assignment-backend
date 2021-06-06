@@ -88,7 +88,7 @@ public class PatientController extends Controller {
     }
 
     private void createRecord(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        //  todo: check id = userid
+        //  todo: check id = userid, check role = patient
         String patientId = req.getParameter("id");
         Patient patient = patientService.getPatientById(patientId);
         Gson gson = new GsonBuilder()

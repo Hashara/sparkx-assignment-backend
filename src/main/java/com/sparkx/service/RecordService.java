@@ -10,6 +10,7 @@ import com.sparkx.model.dao.RecordDAO;
 import com.sparkx.model.*;
 import com.sparkx.model.Types.SeverityLevel;
 import com.sparkx.model.Types.StatusType;
+import com.sparkx.model.dao.StatsDAO;
 import com.sparkx.util.Message;
 import com.sparkx.util.Query;
 import com.sparkx.util.Util;
@@ -79,6 +80,33 @@ public class RecordService {
         } catch (Exception throwables) {
             throwables.printStackTrace();
             throw throwables;
+        }
+    }
+
+    public void markDeath(String patientId) throws SQLException, NotFoundException {
+        try (Connection connection = Database.getConnection();
+             PreparedStatement closeRecord = connection.prepareStatement(Query.RECORD_CLOSE);
+             PreparedStatement patientUpdate = connection.prepareStatement(Query.PATIENT_DEATH)) {
+
+            connection.setAutoCommit(false);
+            Date date = Util.getDate();
+            // closed =? WHERE patientId=?
+            closeRecord.setDate(1, date);
+            closeRecord.setString(2, patientId);
+
+            // death=? WHERE patientId=?
+            patientUpdate.setDate(1, date);
+            patientUpdate.setString(2, patientId);
+
+            closeRecord.execute();
+            patientUpdate.execute();
+            connection.commit();
+        } catch (SQLException throwables) {
+            logger.error(throwables.getMessage());
+            throw throwables;
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            throw new NotFoundException(Message.RECORD_NOT_FOUND);
         }
     }
 
@@ -238,20 +266,83 @@ public class RecordService {
         }
     }
 
-    public void getTodayStatsCountryLevel() {
-        // todo: distinct patientId serial admittedDate = today, dischargedDat = today from record
-        // todo: check patient death = today
+    public StatsDAO getDailyStatsCountryLevel(Date date) throws SQLException {
+        try (Connection connection = Database.getConnection();
+             PreparedStatement newCases = connection.prepareStatement(Query.DAILY_NEW_CASES_COUNTRY_LEVEL);
+             PreparedStatement recovered = connection.prepareStatement(Query.DAILY_RECOVERED_COUNTRY_LEVEL);
+             PreparedStatement deaths = connection.prepareStatement(Query.DAILY_DEATHS_COUNTRY_LEVEL)) {
+
+            //regdate=?
+            newCases.setDate(1, date);
+
+            //dischargeddate=?
+            recovered.setDate(1, date);
+
+            //closed=?
+            deaths.setDate(1, date);
+
+            return mapToResultSetsToStatsDAO(newCases, recovered, deaths);
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            throw throwables;
+        }
+
     }
 
-    public void getTodayStatsDistrictLevel(String district) {
-        // todo: distinct patientId serial admittedDate = today , dischargedDat = today patient = district
-        // todo:  check patient death = today district = district
+    public StatsDAO getDailyStatsDistrictLevel(Date date, String district) throws SQLException {
+        try (Connection connection = Database.getConnection();
+             PreparedStatement newCases = connection.prepareStatement(Query.DAILY_NEW_CASES_DISTRICT_LEVEL);
+             PreparedStatement recovered = connection.prepareStatement(Query.DAILY_RECOVERED_DISTRICT_LEVEL);
+             PreparedStatement deaths = connection.prepareStatement(Query.DAILY_DEATHS_DISTRICT_LEVEL)) {
 
+            //district =? AND regdate=?"
+            newCases.setString(1, district);
+            newCases.setDate(2, date);
+
+            //district =? AND dischargeddate=?
+            recovered.setString(1, district);
+            recovered.setDate(2, date);
+
+            //district =? AND closed=?
+            deaths.setString(1, district);
+            deaths.setDate(2, date);
+
+
+            return mapToResultSetsToStatsDAO(newCases, recovered, deaths);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            throw throwables;
+        }
     }
 
-    public void getTodayStatsHospitalLevel(UUID hospitalId) {
+    public StatsDAO getDailyStatsHospitalLevel(Date date, String hospitalId) throws SQLException {
         // todo: distinct patientId serial admittedDate = today , dischargedDat = today patient = district
         // todo:  check patient death = today join record hospitalid = hospital id dischargeDate = null
+
+        try (Connection connection = Database.getConnection();
+             PreparedStatement newCases = connection.prepareStatement(Query.DAILY_NEW_CASES_HOSPITAL_LEVEL);
+             PreparedStatement recovered = connection.prepareStatement(Query.DAILY_RECOVERED_HOSPITAL_LEVEL);
+             PreparedStatement deaths = connection.prepareStatement(Query.DAILY_DEATHS_HOSPITAL_LEVEL)) {
+
+
+            //regdate=? AND hospitalid=?::uuid
+            newCases.setDate(1, date);
+            newCases.setString(2, hospitalId);
+
+            //dischargeddate=? AND hospitalid=?::uuid
+            recovered.setDate(1, date);
+            recovered.setString(2, hospitalId);
+
+            //closed=? AND hospitalid=?::uuid
+            deaths.setDate(1, date);
+            deaths.setString(2, hospitalId);
+
+            return mapToResultSetsToStatsDAO(newCases, recovered, deaths);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            throw throwables;
+        }
     }
 
     public void getOverAllStats() {
@@ -260,6 +351,27 @@ public class RecordService {
         // todo: patients join records where dischargedDate == null
     }
 
+    private StatsDAO mapToResultSetsToStatsDAO(PreparedStatement newCases, PreparedStatement recovered, PreparedStatement deaths) throws SQLException {
+//        System.out.println(deaths);
+        ResultSet newCaseResult = newCases.executeQuery();
+        ResultSet recoveredResult = recovered.executeQuery();
+        ResultSet deathResult = deaths.executeQuery();
+
+        StatsDAO statsDAO = new StatsDAO();
+
+        newCaseResult.next();
+        //newcases
+        statsDAO.setNewCases(newCaseResult.getInt("newcases"));
+
+        //recovered
+        recoveredResult.next();
+        statsDAO.setRecovered(recoveredResult.getInt("recovered"));
+        //deaths
+        deathResult.next();
+        statsDAO.setDeaths(deathResult.getInt("deaths"));
+
+        return statsDAO;
+    }
 
     private void addToBed(QueuePatientSerialDAO queuePatientSerialDAO, Integer bedId, UUID hospitalId) throws FailedToAddException {
         try (Connection connection = Database.getConnection();

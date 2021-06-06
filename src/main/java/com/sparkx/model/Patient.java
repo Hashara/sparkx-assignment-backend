@@ -5,7 +5,7 @@ import com.sparkx.model.Types.GenderType;
 import java.sql.Date;
 import java.util.UUID;
 
-public class Patient extends Person{
+public class Patient extends Person {
     private UUID patientId;
     private String district;
     private int location_x;
@@ -13,6 +13,19 @@ public class Patient extends Person{
     private GenderType gender;
     private String contact;
     private Date birthDate;
+    private Date death;
+
+    public void setGender(GenderType gender) {
+        this.gender = gender;
+    }
+
+    public Date getDeath() {
+        return death;
+    }
+
+    public void setDeath(Date death) {
+        this.death = death;
+    }
 
     public UUID getPatientId() {
         return patientId;

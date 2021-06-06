@@ -15,6 +15,15 @@ public class Record {
     private Date dischargedDate;
     private UUID queueId;
     private int queueNumber;
+    private Date closed;
+
+    public Date getClosed() {
+        return closed;
+    }
+
+    public void setClosed(Date closed) {
+        this.closed = closed;
+    }
 
     public int getQueueNumber() {
         return queueNumber;
