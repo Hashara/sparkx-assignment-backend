@@ -2,15 +2,15 @@ package com.sparkx.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.sparkx.Exception.InvalidInputException;
 import com.sparkx.Exception.NotCreatedException;
+import com.sparkx.Exception.UnauthorizedException;
+import com.sparkx.model.Hospital;
 import com.sparkx.model.Patient;
 import com.sparkx.model.Person;
+import com.sparkx.model.dao.AuthDAO;
 import com.sparkx.model.dao.PatientRecordDAO;
 import com.sparkx.model.dao.StatsDAO;
-import com.sparkx.service.PatientService;
-import com.sparkx.service.PersonService;
-import com.sparkx.service.RecordService;
+import com.sparkx.service.*;
 import com.sparkx.util.Message;
 import com.sparkx.util.Util;
 import org.apache.log4j.Logger;
@@ -18,9 +18,11 @@ import org.apache.log4j.Logger;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.List;
 
 @WebServlet(name = "PublicServlet", value = "/public")
 public class PublicController extends Controller {
@@ -28,12 +30,16 @@ public class PublicController extends Controller {
     private PersonService personService;
     private PatientService patientService;
     private RecordService recordService;
+    private AuthService authService;
+    public HospitalService hospitalService;
 
     public void init() {
         logger = Logger.getLogger(DoctorController.class);
         personService = new PersonService();
         patientService = new PatientService();
         recordService = new RecordService();
+        authService = new AuthService();
+        hospitalService = new HospitalService();
     }
 
     @Override
@@ -47,6 +53,9 @@ public class PublicController extends Controller {
                     break;
                 case "PATIENT_REGISTER":
                     registerPatient(req, resp);
+                    break;
+                case "LOGIN":
+                    signIn(req, resp);
                     break;
             }
         } catch (Exception e) {
@@ -73,11 +82,29 @@ public class PublicController extends Controller {
                 case "OVERALL_STATUS":
                     overallStatus(req, resp);
                     break;
+                case "GET_ALL_HOSPITALS":
+                    getAllHospitals(req, resp);
+                    break;
+                case "GET_ALL_DISTRICTS":
+                    getAllDistricts(req, resp);
+                    break;
             }
         } catch (Exception e) {
             logger.error(e.getMessage());
             sendMessageResponse(e.getMessage(), resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
+    }
+
+    private void getAllDistricts(HttpServletRequest req, HttpServletResponse resp) {
+        List<String> districtList = patientService.getAllDistricts();
+        Gson gson = new Gson();
+        sendResponse(gson.toJson(districtList), resp, HttpServletResponse.SC_OK);
+    }
+
+    private void getAllHospitals(HttpServletRequest req, HttpServletResponse resp) {
+        List<Hospital> hospitalList = hospitalService.getAllHospitals();
+        Gson gson = new Gson();
+        sendResponse(gson.toJson(hospitalList), resp, HttpServletResponse.SC_OK);
     }
 
     private void overallStatus(HttpServletRequest req, HttpServletResponse resp) throws SQLException {
@@ -180,7 +207,27 @@ public class PublicController extends Controller {
         }
     }
 
-    // todo: GET - get all details, by date
+
+    private void signIn(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        String jsonResponse = getjsonRequest(req);
+        Gson gson = new Gson();
+        Person person = gson.fromJson(jsonResponse, Person.class);
+
+        AuthDAO authDAO = null;
+        try {
+            authDAO = authService.authenticate(person.getEmail(), person.getPassword());
+
+            if (authDAO == null) {
+                sendMessageResponse(Message.INVALID_CREDENTIALS, resp, HttpServletResponse.SC_UNAUTHORIZED);
+            } else {
+                sendResponse(gson.toJson(authDAO), resp, HttpServletResponse.SC_OK);
+            }
+        } catch (IOException e) {
+            sendMessageResponse(Message.INVALID_INPUT, resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
     public void destroy() {
     }
 }

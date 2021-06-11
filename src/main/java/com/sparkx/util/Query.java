@@ -40,7 +40,7 @@ public class Query {
             + " JOIN " + RECORD_TABLE + " on " + PATIENT_TABLE + ".patientId = " + RECORD_TABLE + ".patientId " +
             " WHERE " + RECORD_TABLE + ".hospitalid = ?::uuid AND dischargeddate is NULL";
     public static final String PATIENT_DEATH = "UPDATE " + PATIENT_TABLE + " SET death=? WHERE patientid=?::uuid";
-
+    public static final String GET_ALL_DISTRICTS = "SELECT DISTINCT district FROM " + PATIENT_TABLE;
 
     /* bed queries */
     public static final String BEDS_CREATE = "INSERT INTO " + BED_TABLE + " (bedid, hospitalid, status) VALUES (1, ?, ?::statusType),(2, ?, ?::statusType),(3, ?, ?::statusType),(4, ?, ?::statusType),(5, ?, ?::statusType),(6, ?, ?::statusType),(7, ?, ?::statusType),(8, ?, ?::statusType),(9, ?, ?::statusType),(10, ?, ?::statusType)";
@@ -50,6 +50,10 @@ public class Query {
             "\tFROM " + BED_TABLE + " JOIN " + HOSPITAL_TABLE + " ON bed.hospitalid = hospital.hospitalid WHERE status = 'available' ORDER BY distance LIMIT 1";
     public static final String BED_BY_HOSPITAL_ID = BED_ALL + " WHERE hospitalid=?";
     public static final String BED_UPDATE_STATUS = "UPDATE " + BED_TABLE + " SET status=?::statustype WHERE bedid=? AND hospitalid=?";
+
+    /* hospital stats */
+    public static final String OVERALL_AVAILABLE_BED = "SELECT COUNT(bedid), hospitalid FROM " + BED_TABLE + "WHERE status = 'available' GROUP BY hospitalid";
+
 
     /* queue queries */
     public static final String QUEUE_CREATE = "INSERT INTO " + QUEUE_TABLE + "(queueid) VALUES (?)";

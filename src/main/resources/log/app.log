@@ -1,7 +1,8 @@
-[ERROR] 2021-06-02 16:27:05,340 com.sparkx.service.RecordService addQueuePatientToHospital - Failed to add to the hospital,Only added0
-[ERROR] 2021-06-02 16:28:08,635 com.sparkx.service.RecordService addQueuePatientToHospital - Failed to add to the hospital,Only added0
-[ERROR] 2021-06-02 16:29:43,734 com.sparkx.service.RecordService addQueuePatientToHospital - Failed to add to the hospital,Only added0
-[ERROR] 2021-06-02 17:07:47,434 com.sparkx.service.RecordService addQueuePatientToHospital - Failed to add to the hospital,Only added0
-[ERROR] 2021-06-02 19:27:50,183 com.sparkx.service.RecordService updateDischargeDate - The column name serialnumber was not found in this ResultSet.
-[ERROR] 2021-06-02 19:30:20,149 com.sparkx.service.RecordService updateDischargeDate - The column name serialnumber was not found in this ResultSet.
-[ERROR] 2021-06-02 19:31:27,092 com.sparkx.service.RecordService updateDischargeDate - The column name status was not found in this ResultSet.
+[ERROR] 2021-06-03 19:57:32,263 com.sparkx.service.RecordService markDeath - ERROR: syntax error at or near "="
+  Position: 23
+[ERROR] 2021-06-03 19:58:03,436 com.sparkx.service.RecordService markDeath - ERROR: column "patientid" does not exist
+  Position: 34
+[ERROR] 2021-06-03 20:00:04,761 com.sparkx.service.RecordService markDeath - ERROR: column "patientid" does not exist
+  Position: 34
+[ERROR] 2021-06-11 20:55:46,401 com.sparkx.service.PatientService getAllDistricts - The column name 1 was not found in this ResultSet.
+[ERROR] 2021-06-11 20:58:31,997 com.sparkx.service.PatientService getAllDistricts - The column name 0 was not found in this ResultSet.
