@@ -265,14 +265,15 @@ public class RunApp {
 //        } catch (IOException | UnauthorizedException e) {
 //            e.printStackTrace();
 //        }
-        try {
-            List<Patient> patientList = new PatientService().getPatientsByHospitalId("b3170262-2b27-49e6-ad2b-d0e1d1dff10c");
-            System.out.println(patientList);
-            System.out.println(new Gson().toJson(patientList));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            List<Patient> patientList = new PatientService().getPatientsByHospitalId("b3170262-2b27-49e6-ad2b-d0e1d1dff10c");
+//            System.out.println(patientList);
+//            System.out.println(new Gson().toJson(patientList));
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
+        System.out.println(new PatientService().getAllDistricts());
 //        System.out.println(authDAO.getPerson() == null);
 //        System.out.println(gson.toJson(authDAO));
 

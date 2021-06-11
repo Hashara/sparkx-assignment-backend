@@ -126,16 +126,31 @@ public class PatientService {
     public List<Patient> getPatientsByHospitalId(String hospitalId) throws Exception {
         try(Connection connection = Database.getConnection();
         PreparedStatement statement = connection.prepareStatement(Query.PATIENTS_BY_HOSPITAL_ID)){
-            statement.setString(1,hospitalId);
+            statement.setString(1, hospitalId);
 
             ResultSet resultSet = statement.executeQuery();
             return mapResultSetToPatientList(resultSet);
 
         } catch (Exception throwables) {
             throwables.printStackTrace();
-            throw  throwables;
+            throw throwables;
         }
     }
+
+    public List<String> getAllDistricts() {
+        List<String> districts = new ArrayList<>();
+        try (Connection connection = Database.getConnection();
+             Statement statement = connection.createStatement();) {
+            ResultSet resultSet = statement.executeQuery(Query.GET_ALL_DISTRICTS);
+            while (resultSet.next()) {
+                districts.add(resultSet.getString("district"));
+            }
+        } catch (SQLException throwables) {
+            logger.error(throwables.getMessage());
+        }
+        return districts;
+    }
+
     private List<Patient> mapResultSetToPatientList(ResultSet resultSet) throws SQLException {
         List<Patient> patientList = new ArrayList<>();
 
