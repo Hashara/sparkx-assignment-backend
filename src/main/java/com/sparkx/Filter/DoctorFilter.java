@@ -25,8 +25,7 @@ public class DoctorFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
 
-        Person person = (Person) req.getAttribute("user");
-        if (person.getRole() == RoleType.Doctor || person.getRole() == RoleType.Director) {
+        if (req.getAttribute("role").equals(RoleType.Doctor.toString()) || req.getAttribute("role").equals(RoleType.Director.toString())) {
             filterChain.doFilter(req, res);
         } else {
             new Controller().sendMessageResponse(Message.FORBIDDEN, res, HttpServletResponse.SC_FORBIDDEN);

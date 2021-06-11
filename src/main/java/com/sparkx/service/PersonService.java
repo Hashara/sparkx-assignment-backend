@@ -73,7 +73,7 @@ public class PersonService {
         return person;
     }
 
-    public Person authenticate(String email, String password) {
+    public Person getAuthenticatedUser(String email, String password) {
         try (Connection connection = Database.getConnection();
              PreparedStatement statement = connection.prepareStatement(Query.PERSON_BY_EMAIL)) {
             statement.setString(1, email);
@@ -81,6 +81,7 @@ public class PersonService {
             ResultSet resultSet = statement.executeQuery();
             Person person = mapResultSetToPerson(resultSet).get(0);
             if (Util.checkPassword(password, person.getPassword())) {
+                person.setPassword("");
                 return person;
             }
         } catch (SQLException throwables) {

@@ -27,7 +27,7 @@ public class AuthFilterHelper {
                     if (index != -1) {
                         String username = credentials.substring(0, index).trim();
                         String password = credentials.substring(index + 1).trim();
-                        person = new PersonService().authenticate(username, password);
+                        person = new PersonService().getAuthenticatedUser(username, password);
                     }
                 }
             }

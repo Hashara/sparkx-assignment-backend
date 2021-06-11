@@ -23,8 +23,7 @@ public class MoHFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
 
-        Person person = (Person) req.getAttribute("user");
-        if (person.getRole() == RoleType.MoH) {
+        if (req.getAttribute("role").equals(RoleType.MoH.toString())) {
             filterChain.doFilter(req, res);
         } else {
             new Controller().sendMessageResponse(Message.FORBIDDEN, res, HttpServletResponse.SC_FORBIDDEN);

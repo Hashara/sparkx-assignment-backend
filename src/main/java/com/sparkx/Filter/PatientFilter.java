@@ -24,9 +24,10 @@ public class PatientFilter implements Filter {
         HttpServletResponse res = (HttpServletResponse) response;
 
         Person person = (Person) req.getAttribute("user");
-        if (person.getRole() == RoleType.Patient || person.getRole() == RoleType.Doctor
-                || person.getRole() == RoleType.Director
-                || person.getRole() == RoleType.HospitalStaff) {
+        if (req.getAttribute("role").equals(RoleType.Patient.toString())
+                || req.getAttribute("role").equals(RoleType.Doctor.toString())
+                || req.getAttribute("role").equals(RoleType.Director.toString())
+                || req.getAttribute("role").equals(RoleType.HospitalStaff.toString())) {
             filterChain.doFilter(req, res);
         } else {
             new Controller().sendMessageResponse(Message.FORBIDDEN, res, HttpServletResponse.SC_FORBIDDEN);
