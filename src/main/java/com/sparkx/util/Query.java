@@ -51,6 +51,10 @@ public class Query {
     public static final String BED_BY_HOSPITAL_ID = BED_ALL + " WHERE hospitalid=?";
     public static final String BED_UPDATE_STATUS = "UPDATE " + BED_TABLE + " SET status=?::statustype WHERE bedid=? AND hospitalid=?";
 
+    /* hospital stats */
+    public static final String OVERALL_AVAILABLE_BED = "SELECT COUNT(bedid), hospitalid FROM " + BED_TABLE + "WHERE status = 'available' GROUP BY hospitalid";
+
+
     /* queue queries */
     public static final String QUEUE_CREATE = "INSERT INTO " + QUEUE_TABLE + "(queueid) VALUES (?)";
     public static final String QUEUE_DELETE = "DELETE FROM " + QUEUE_TABLE + " WHERE queueid=?";

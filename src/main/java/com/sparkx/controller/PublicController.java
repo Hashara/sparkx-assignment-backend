@@ -2,12 +2,14 @@ package com.sparkx.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.sparkx.Exception.InvalidInputException;
 import com.sparkx.Exception.NotCreatedException;
+import com.sparkx.Exception.UnauthorizedException;
 import com.sparkx.model.Patient;
 import com.sparkx.model.Person;
+import com.sparkx.model.dao.AuthDAO;
 import com.sparkx.model.dao.PatientRecordDAO;
 import com.sparkx.model.dao.StatsDAO;
+import com.sparkx.service.AuthService;
 import com.sparkx.service.PatientService;
 import com.sparkx.service.PersonService;
 import com.sparkx.service.RecordService;
@@ -18,6 +20,7 @@ import org.apache.log4j.Logger;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -28,12 +31,14 @@ public class PublicController extends Controller {
     private PersonService personService;
     private PatientService patientService;
     private RecordService recordService;
+    public AuthService authService;
 
     public void init() {
         logger = Logger.getLogger(DoctorController.class);
         personService = new PersonService();
         patientService = new PatientService();
         recordService = new RecordService();
+        authService = new AuthService();
     }
 
     @Override
@@ -47,6 +52,9 @@ public class PublicController extends Controller {
                     break;
                 case "PATIENT_REGISTER":
                     registerPatient(req, resp);
+                    break;
+                case "LOGIN":
+                    signIn(req, resp);
                     break;
             }
         } catch (Exception e) {
@@ -180,7 +188,27 @@ public class PublicController extends Controller {
         }
     }
 
-    // todo: GET - get all details, by date
+
+    private void signIn(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        String jsonResponse = getjsonRequest(req);
+        Gson gson = new Gson();
+        Person person = gson.fromJson(jsonResponse, Person.class);
+
+        AuthDAO authDAO = null;
+        try {
+            authDAO = authService.authenticate(person.getEmail(), person.getPassword());
+
+            if (authDAO == null) {
+                sendMessageResponse(Message.INVALID_CREDENTIALS, resp, HttpServletResponse.SC_UNAUTHORIZED);
+            } else {
+                sendResponse(gson.toJson(authDAO), resp, HttpServletResponse.SC_OK);
+            }
+        } catch (IOException e) {
+            sendMessageResponse(Message.INVALID_INPUT, resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
     public void destroy() {
     }
 }

@@ -3,13 +3,25 @@ package com.sparkx;
 import com.google.gson.Gson;
 import com.sparkx.Exception.FailedToAddException;
 import com.sparkx.Exception.FailedToGetException;
+import com.sparkx.Exception.NotFoundException;
+import com.sparkx.Exception.UnauthorizedException;
+import com.sparkx.model.Patient;
+import com.sparkx.model.Person;
 import com.sparkx.model.Severity;
+import com.sparkx.model.Types.RoleType;
+import com.sparkx.model.dao.AuthDAO;
 import com.sparkx.model.dao.QueueDetailsDAO;
-import com.sparkx.service.HospitalService;
-import com.sparkx.service.RecordService;
+import com.sparkx.model.dao.StatsDAO;
+import com.sparkx.service.*;
 import com.sparkx.util.DataInsert;
+import com.sparkx.util.Util;
+import io.jsonwebtoken.Claims;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -214,7 +226,68 @@ public class RunApp {
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        }
- /* int serverPort = 8000;
+//        System.out.println(new PersonService().authenticate("director1@gmail.com","123456"));
+//        try {
+//            new RecordService().markDeath("e61cfcdb-e905-47f5-b7ee-818550e984ea");
+//        } catch (SQLException throwables) {
+//            throwables.printStackTrace();
+//        } catch (NotFoundException e) {
+//            e.printStackTrace();
+//        }
+//        try {
+//
+//            StatsDAO statsDAO = new RecordService().getDailyStatsHospitalLevel(Util.covertStringToDate("2021-06-01"),"78ef9ab0-85d2-4fba-99df-995484c50b18");
+//            System.out.println(statsDAO);
+//        } catch (ParseException | SQLException e) {
+//            e.printStackTrace();
+//        }
+
+//        try {
+//            System.out.println(new RecordService().getOverAllStats());
+//        } catch (SQLException throwables) {
+//            throwables.printStackTrace();
+//        }
+//        try {
+//            System.out.println(Util.getPropValues("SECRET_KEY"));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        Gson gson = new Gson();
+//        Person person = gson.fromJson("{\n" +
+//                "    \"email\": \"director1@gmail.com\",\n" +
+//                "    \"password\": \"123456\"\n" +
+//                "}", Person.class);
+//        AuthDAO authDAO = null;
+//        try {
+//            authDAO = new AuthService().authenticate("moh4@gmail.com", "123456");
+//
+//            System.out.println(authDAO.getPerson());
+//        } catch (IOException | UnauthorizedException e) {
+//            e.printStackTrace();
+//        }
+        try {
+            List<Patient> patientList = new PatientService().getPatientsByHospitalId("b3170262-2b27-49e6-ad2b-d0e1d1dff10c");
+            System.out.println(patientList);
+            System.out.println(new Gson().toJson(patientList));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+//        System.out.println(authDAO.getPerson() == null);
+//        System.out.println(gson.toJson(authDAO));
+
+//            try {
+//
+//                Claims claims =AuthService.decodeJWT("eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI4YzNhODlkMi0yYWNjLTQ4ZDEtOTQ4NS02NjlhNjU1YTE2ZjEiLCJpYXQiOjE2MjM0MTQ4NjgsImlzcyI6Ik5DTVMiLCJyb2xlIjoiRGlyZWN0b3IiLCJuYW1lIjoiZGlyZWN0b3IgT25lIiwiaG9zcGl0YWxJZCI6Ijc4ZWY5YWIwLTg1ZDItNGZiYS05OWRmLTk5NTQ4NGM1MGIxOCIsImV4cCI6MTYyMzQ0NDg2OH0.q170H48m61pvNM7EB7jJd2M3LfTavUNAey71vFEHz7E");
+//                System.out.println(claims.get("role"));
+//                System.out.println(RoleType.Director.toString());
+//                System.out.println("Director".equals(RoleType.Director.toString()));
+//            } catch (Exception e) {
+//                System.out.println(e.getMessage());
+//            }
+
+
+        /* int serverPort = 8000;
 
         HttpServer server = HttpServer.create(new InetSocketAddress(serverPort), 0);
         server.createContext("/api/hello", (exchange -> {

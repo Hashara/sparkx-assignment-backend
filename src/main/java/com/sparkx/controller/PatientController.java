@@ -48,6 +48,9 @@ public class PatientController extends Controller {
                 case "GET_ACTIVE_RECORD":
                     getActiveRecord(req, resp);
                     break;
+                case "PATIENTS_BY_HOSPITAL":
+                    getPatientsByHospital(req, resp);
+                    break;
             }
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -65,9 +68,7 @@ public class PatientController extends Controller {
                 case "PATIENT_RECORD":
                     createRecord(req, resp);
                     break;
-                case "PATIENTS_BY_HOSPITAL":
-                    getPatientsByHospital(req, resp);
-                    break;
+
             }
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -131,8 +132,7 @@ public class PatientController extends Controller {
         // todo: check role of user = hospital staff|doctor|director and hospital id of user = hospital id
 
         List<Patient> patientList = patientService.getPatientsByHospitalId(hospitalId);
-        Gson gson = new GsonBuilder()
-                .setDateFormat("yyyy-MM-dd").create();
+        Gson gson = new Gson();
 
         sendResponse(gson.toJson(patientList), resp, HttpServletResponse.SC_OK);
     }

@@ -23,8 +23,7 @@ public class DirectorFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
 
-        Person person = (Person) req.getAttribute("user");
-        if (person.getRole() == RoleType.Director) {
+        if (req.getAttribute("role").equals(RoleType.Director.toString())) {
             filterChain.doFilter(req, res);
         } else {
             new Controller().sendMessageResponse(Message.FORBIDDEN, res, HttpServletResponse.SC_FORBIDDEN);
