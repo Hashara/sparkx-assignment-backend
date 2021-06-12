@@ -3,7 +3,6 @@ package com.sparkx.controller;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sparkx.Exception.NotCreatedException;
-import com.sparkx.Exception.UnauthorizedException;
 import com.sparkx.model.Hospital;
 import com.sparkx.model.Patient;
 import com.sparkx.model.Person;
@@ -70,6 +69,9 @@ public class PublicController extends Controller {
             String cmd = req.getParameter("cmd");
 
             switch (cmd) {
+                case "GET_STATUS":
+                    getStatus(req, resp);
+                    break;
                 case "DAILY_COUNTRY_LEVEL":
                     dailyCountryLevel(req, resp);
                     break;
@@ -95,6 +97,7 @@ public class PublicController extends Controller {
         }
     }
 
+
     private void getAllDistricts(HttpServletRequest req, HttpServletResponse resp) {
         List<String> districtList = patientService.getAllDistricts();
         Gson gson = new Gson();
@@ -105,6 +108,30 @@ public class PublicController extends Controller {
         List<Hospital> hospitalList = hospitalService.getAllHospitals();
         Gson gson = new Gson();
         sendResponse(gson.toJson(hospitalList), resp, HttpServletResponse.SC_OK);
+    }
+
+    private void getStatus(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        String level = req.getParameter("level");
+
+        switch (level) {
+            case "OVERALL":
+                overallStatus(req, resp);
+                break;
+            case "COUNTRY":
+                dailyCountryLevel(req, resp);
+                break;
+            case "DISTRICT":
+                dailyDistrictLevel(req, resp);
+                break;
+            case "HOSPITAL":
+                dailyHospitalLevel(req, resp);
+                break;
+            default:
+                sendMessageResponse(Message.INVALID_INPUT, resp, HttpServletResponse.SC_BAD_REQUEST);
+                break;
+
+        }
+
     }
 
     private void overallStatus(HttpServletRequest req, HttpServletResponse resp) throws SQLException {
