@@ -5,7 +5,6 @@ import com.sparkx.Exception.NotFoundException;
 import com.sparkx.model.*;
 import com.sparkx.model.Types.RoleType;
 import com.sparkx.model.dao.PatientRecordDAO;
-import com.sparkx.model.dao.RecordDAO;
 import com.sparkx.util.Message;
 import com.sparkx.util.Query;
 import com.sparkx.core.Database;
