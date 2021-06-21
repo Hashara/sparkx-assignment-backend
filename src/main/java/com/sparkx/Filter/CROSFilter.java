@@ -19,7 +19,8 @@ public class CROSFilter implements Filter {
         HttpServletResponse res = (HttpServletResponse) servletResponse;
 
         res.addHeader("Access-Control-Allow-Origin", "*");
-        res.addHeader("Access-Control-Allow-Methods", "GET, OPTIONS, HEAD, PUT, POST");
+        res.addHeader("Access-Control-Allow-Methods", "GET, OPTIONS, HEAD, PUT, POST, DELETE");
+        res.addHeader("Access-Control-Allow-Headers", "*");
 
         if (req.getMethod().equals("OPTIONS")) {
             res.setStatus(HttpServletResponse.SC_ACCEPTED);

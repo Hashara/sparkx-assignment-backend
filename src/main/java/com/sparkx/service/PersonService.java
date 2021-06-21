@@ -9,10 +9,7 @@ import com.sparkx.model.Types.RoleType;
 import com.sparkx.util.Util;
 import org.apache.log4j.Logger;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -112,5 +109,19 @@ public class PersonService {
             personList.add(person);
         }
         return personList;
+    }
+
+    public List<String> getAllRoleTypes() {
+        List<String> roleTypes = new ArrayList<>();
+        try (Connection connection = Database.getConnection();
+             Statement statement = connection.createStatement();) {
+            ResultSet resultSet = statement.executeQuery(Query.GET_ALL_ROLE_TYPE);
+            while (resultSet.next()) {
+                roleTypes.add(resultSet.getString("roleType"));
+            }
+        } catch (SQLException throwables) {
+            logger.error(throwables.getMessage());
+        }
+        return roleTypes;
     }
 }

@@ -90,11 +90,20 @@ public class PublicController extends Controller {
                 case "GET_ALL_DISTRICTS":
                     getAllDistricts(req, resp);
                     break;
+                case "GET_ALL_ROLE_TYPES":
+                    getAllRoleTypes(req, resp);
+                    break;
             }
         } catch (Exception e) {
             logger.error(e.getMessage());
             sendMessageResponse(e.getMessage(), resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
+    }
+
+    private void getAllRoleTypes(HttpServletRequest req, HttpServletResponse resp) {
+        List<String> districtList = personService.getAllRoleTypes();
+        Gson gson = new Gson();
+        sendResponse(gson.toJson(districtList), resp, HttpServletResponse.SC_OK);
     }
 
 

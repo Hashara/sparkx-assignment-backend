@@ -273,10 +273,15 @@ public class RunApp {
 //            e.printStackTrace();
 //        }
 
-        System.out.println(new PatientService().getAllDistricts());
+//        System.out.println(new PatientService().getAllDistricts());
 //        System.out.println(authDAO.getPerson() == null);
 //        System.out.println(gson.toJson(authDAO));
 
+//        try {
+//            System.out.println(new RecordService().getOverAllStats());
+//        } catch (SQLException throwables) {
+//            throwables.printStackTrace();
+//        }
 //            try {
 //
 //                Claims claims =AuthService.decodeJWT("eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI4YzNhODlkMi0yYWNjLTQ4ZDEtOTQ4NS02NjlhNjU1YTE2ZjEiLCJpYXQiOjE2MjM0MTQ4NjgsImlzcyI6Ik5DTVMiLCJyb2xlIjoiRGlyZWN0b3IiLCJuYW1lIjoiZGlyZWN0b3IgT25lIiwiaG9zcGl0YWxJZCI6Ijc4ZWY5YWIwLTg1ZDItNGZiYS05OWRmLTk5NTQ4NGM1MGIxOCIsImV4cCI6MTYyMzQ0NDg2OH0.q170H48m61pvNM7EB7jJd2M3LfTavUNAey71vFEHz7E");
