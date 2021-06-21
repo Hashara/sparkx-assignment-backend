@@ -18,19 +18,19 @@ public class Query {
     public static final String QUEUE_VIEW = "queue_view";
 
     /* hospital queries */
-    public static final String HOSPITAL_CREATE = "INSERT INTO " + HOSPITAL_TABLE + " (hospitalid, name, district, location_x, location_y) VALUES (?, ?, ?, ?, ?)";
+    public static final String HOSPITAL_CREATE = "INSERT INTO " + HOSPITAL_TABLE + " (hospitalid, name, district, location_x, location_y) VALUES (?, ?, ?::district, ?, ?)";
     public static final String HOSPITAL_ALL = "SELECT hospitalid, name, district, location_x, location_y FROM " + HOSPITAL_TABLE;
-    public static final String HOSPITAL_BY_DISTRICT = HOSPITAL_ALL + "WHERE district=?";
+    public static final String HOSPITAL_BY_DISTRICT = HOSPITAL_ALL + "WHERE district=?::district";
 
     /* person queries */
-    public static final String PERSON_CREATE = "INSERT INTO " + PERSON_TABLE + " (userid, email, password, first_name, last_name, hospitalid, role) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    public static final String PERSON_CREATE = "INSERT INTO " + PERSON_TABLE + " (userid, email, password, first_name, last_name, hospitalid, role) VALUES (?, ?, ?, ?, ?, ?, ?::RoleType)";
     public static final String PERSON_ALL = "SELECT userid, email, first_name, last_name, hospitalid, role FROM " + PERSON_TABLE;
     public static final String PERSON_BY_ID = PERSON_ALL + " WHERE userid = ?::uuid";
-    public static final String PERSON_BY_ROLE = PERSON_ALL + " WHERE role=?";
+    public static final String PERSON_BY_ROLE = PERSON_ALL + " WHERE role=?::RoleType";
     public static final String PERSON_BY_EMAIL = "SELECT userid, email, first_name, last_name, hospitalid, role, password FROM " + PERSON_TABLE + " WHERE email=?";
 
     /* patient queries */
-    public static final String PATIENT_CREATE = "INSERT INTO " + PATIENT_TABLE + " ( patientid, district, location_x, location_y, gender, contact, birthdate) VALUES (?, ?, ?, ?, ?::genderTypes, ?, ?)";
+    public static final String PATIENT_CREATE = "INSERT INTO " + PATIENT_TABLE + " ( patientid, district, location_x, location_y, gender, contact, birthdate) VALUES (?, ?::district, ?, ?, ?::genderTypes, ?, ?)";
     public static final String PATIENT_ALL = "SELECT patientid, district, location_x, location_y, gender, contact, birthdate, email, first_name,last_name FROM " + PATIENT_TABLE + " join " + PERSON_TABLE + " on " + PATIENT_TABLE + ".patientId = " + PERSON_TABLE + ".userId";
     public static final String PATIENT_BY_PATIENT_ID = PATIENT_ALL + " WHERE patientid = ?::uuid";
     public static final String PATIENT_BY_USER_ID = PATIENT_ALL + " WHERE userid = ?";
@@ -40,7 +40,7 @@ public class Query {
             + " JOIN " + RECORD_TABLE + " on " + PATIENT_TABLE + ".patientId = " + RECORD_TABLE + ".patientId " +
             " WHERE " + RECORD_TABLE + ".hospitalid = ?::uuid AND dischargeddate is NULL";
     public static final String PATIENT_DEATH = "UPDATE " + PATIENT_TABLE + " SET death=? WHERE patientid=?::uuid";
-    public static final String GET_ALL_DISTRICTS = "SELECT DISTINCT district FROM " + PATIENT_TABLE;
+    public static final String GET_ALL_DISTRICTS = "SELECT unnest(enum_range(NULL::district)) as district";
 
     /* bed queries */
     public static final String BEDS_CREATE = "INSERT INTO " + BED_TABLE + " (bedid, hospitalid, status) VALUES (1, ?, ?::statusType),(2, ?, ?::statusType),(3, ?, ?::statusType),(4, ?, ?::statusType),(5, ?, ?::statusType),(6, ?, ?::statusType),(7, ?, ?::statusType),(8, ?, ?::statusType),(9, ?, ?::statusType),(10, ?, ?::statusType)";
@@ -97,13 +97,13 @@ public class Query {
 
     public static final String DAILY_NEW_CASES_DISTRICT_LEVEL = "SELECT COUNT(serialnumber) AS newcases FROM " + RECORD_TABLE
             + " JOIN " + PATIENT_TABLE + " ON " + RECORD_TABLE + ".patientId = " + PATIENT_TABLE
-            + ".patientId WHERE district =? AND regdate=?";
+            + ".patientId WHERE district =?::district AND regdate=?";
     public static final String DAILY_RECOVERED_DISTRICT_LEVEL = "SELECT COUNT(serialnumber) AS recovered FROM " + RECORD_TABLE
             + " JOIN " + PATIENT_TABLE + " ON " + RECORD_TABLE + ".patientId = " + PATIENT_TABLE
-            + ".patientId WHERE district =? AND dischargeddate=?";
+            + ".patientId WHERE district =?::district AND dischargeddate=?";
     public static final String DAILY_DEATHS_DISTRICT_LEVEL = "SELECT COUNT(serialnumber) AS deaths FROM " + RECORD_TABLE
             + " JOIN " + PATIENT_TABLE + " ON " + RECORD_TABLE + ".patientId = " + PATIENT_TABLE
-            + ".patientId WHERE district =? AND closed=?";
+            + ".patientId WHERE district =?::district AND closed=?";
 
     public static final String TOTAL_CASES = "SELECT COUNT( DISTINCT serialnumber) FROM " + RECORD_TABLE;
     public static final String TOTAL_RECOVER = "SELECT COUNT( DISTINCT serialnumber) FROM " + RECORD_TABLE + " WHERE dischargeddate IS NOT NULL";
