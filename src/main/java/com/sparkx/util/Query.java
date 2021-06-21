@@ -114,4 +114,6 @@ public class Query {
     public static final String SEVERITY_BY_SERIAL_NUMBER = "SELECT severityid, level, doctorid, markeddate, serialnumber FROM " + SEVERITY_TABLE +
             " WHERE serialnumber = ?";
 
+    /* types */
+    public static final String GET_ALL_ROLE_TYPE = "SELECT unnest(enum_range(NULL::roleType)) as roleType";
 }
