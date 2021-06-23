@@ -1,8 +1,4 @@
-[ERROR] 2021-06-03 19:57:32,263 com.sparkx.service.RecordService markDeath - ERROR: syntax error at or near "="
-  Position: 23
-[ERROR] 2021-06-03 19:58:03,436 com.sparkx.service.RecordService markDeath - ERROR: column "patientid" does not exist
-  Position: 34
-[ERROR] 2021-06-03 20:00:04,761 com.sparkx.service.RecordService markDeath - ERROR: column "patientid" does not exist
-  Position: 34
-[ERROR] 2021-06-11 20:55:46,401 com.sparkx.service.PatientService getAllDistricts - The column name 1 was not found in this ResultSet.
-[ERROR] 2021-06-11 20:58:31,997 com.sparkx.service.PatientService getAllDistricts - The column name 0 was not found in this ResultSet.
+[ERROR] 2021-06-23 10:27:06,956 com.sparkx.service.HospitalService getHospitalByID - 
+[ERROR] 2021-06-23 10:27:59,309 com.sparkx.service.HospitalService getHospitalByID - 
+[ERROR] 2021-06-23 10:28:27,534 com.sparkx.service.HospitalService getHospitalByID - 
+[ERROR] 2021-06-23 10:29:54,372 com.sparkx.service.HospitalService getHospitalByID - 

@@ -10,6 +10,7 @@ import com.sparkx.model.Person;
 import com.sparkx.model.Severity;
 import com.sparkx.model.Types.RoleType;
 import com.sparkx.model.dao.AuthDAO;
+import com.sparkx.model.dao.DetailedHospitalDAO;
 import com.sparkx.model.dao.QueueDetailsDAO;
 import com.sparkx.model.dao.StatsDAO;
 import com.sparkx.service.*;
@@ -292,6 +293,12 @@ public class RunApp {
 //                System.out.println(e.getMessage());
 //            }
 
+        try {
+            DetailedHospitalDAO detailedHospitalDAO =
+                    new HospitalService().getHospitalByID("0a03ec4f-6afa-4dab-b08b-9f2521f23d45");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         /* int serverPort = 8000;
 

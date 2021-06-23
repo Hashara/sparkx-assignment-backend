@@ -89,7 +89,7 @@ public class PersonService {
         return null;
     }
 
-    private List<Person> mapResultSetToPerson(ResultSet resultSet) throws SQLException {
+    public List<Person> mapResultSetToPerson(ResultSet resultSet) throws SQLException {
         List<Person> personList = null;
         while (resultSet.next()) {
             if (personList == null) {
