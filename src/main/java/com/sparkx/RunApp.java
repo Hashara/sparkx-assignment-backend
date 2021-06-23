@@ -292,12 +292,18 @@ public class RunApp {
 //            } catch (Exception e) {
 //                System.out.println(e.getMessage());
 //            }
+//
+//        try {
+//            DetailedHospitalDAO detailedHospitalDAO =
+//                    new HospitalService().getHospitalByID("0a03ec4f-6afa-4dab-b08b-9f2521f23d45");
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
         try {
-            DetailedHospitalDAO detailedHospitalDAO =
-                    new HospitalService().getHospitalByID("0a03ec4f-6afa-4dab-b08b-9f2521f23d45");
-        } catch (Exception e) {
-            e.printStackTrace();
+            QueueDetailsDAO queueDetailsDAO = new HospitalService().getQueueDetails();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
 
         /* int serverPort = 8000;

@@ -199,12 +199,14 @@ public class HospitalService {
             ResultSet resultSetDistrict = getDistrict.executeQuery(Query.QUEUE_NEED_HOSPITAL);
             resultSetDistrict.next();
             QueueDetailsDAO queueDetailsDAO = new QueueDetailsDAO();
-            queueDetailsDAO.setDistrict(resultSetDistrict.getString("maxdis"));
 
             ResultSet resultSetLength = getLength.executeQuery(Query.QUEUE_LENGTH);
             resultSetLength.next();
             queueDetailsDAO.setLength(resultSetLength.getInt("length"));
 
+            if (queueDetailsDAO.getLength() > 0) {
+                queueDetailsDAO.setDistrict(resultSetDistrict.getString("maxdis"));
+            }
             return queueDetailsDAO;
         } catch (SQLException throwables) {
             throwables.printStackTrace();
