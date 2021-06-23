@@ -5,7 +5,9 @@ import com.sparkx.Exception.FailedToGetException;
 import com.sparkx.Exception.NotCreatedException;
 import com.sparkx.Exception.NotFoundException;
 import com.sparkx.model.Bed;
+import com.sparkx.model.Person;
 import com.sparkx.model.Types.RoleType;
+import com.sparkx.model.dao.DetailedHospitalDAO;
 import com.sparkx.model.dao.NewHospitalDAO;
 import com.sparkx.model.dao.QueueDetailsDAO;
 import com.sparkx.util.Message;
@@ -115,6 +117,44 @@ public class HospitalService {
 
     }
 
+    public DetailedHospitalDAO getHospitalByID(String hospitalId) throws Exception {
+        DetailedHospitalDAO detailedHospitalDAO = null;
+        try (Connection connection = Database.getConnection();
+             PreparedStatement hospitalById = connection.prepareStatement(Query.HOSPITAL_BY_ID);
+             PreparedStatement director = connection.prepareStatement(Query.PERSON_BY_ROLE_HOSPITAL);
+             PreparedStatement beds = connection.prepareStatement(Query.BED_BY_HOSPITAL_ID)
+        ) {
+            hospitalById.setString(1, hospitalId);
+
+            director.setString(1, String.valueOf(RoleType.Director));
+            director.setString(2, hospitalId);
+
+            beds.setString(1, hospitalId);
+
+            ResultSet hospitalResult = hospitalById.executeQuery();
+            ResultSet directorResult = director.executeQuery();
+            ResultSet bedsResult = beds.executeQuery();
+
+            Hospital hospital = mapResultSetToHospitalList(hospitalResult).get(0);
+            Person person = new PersonService().mapResultSetToPerson(directorResult).get(0);
+            List<Bed> bedList = mapResultSetToBedList(bedsResult);
+
+            detailedHospitalDAO = new DetailedHospitalDAO();
+            detailedHospitalDAO.setHospital(hospital);
+            detailedHospitalDAO.setDirector(person);
+            detailedHospitalDAO.setBeds(bedList);
+
+            return detailedHospitalDAO;
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            throw throwables;
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            throw e;
+        }
+    }
+
     public Bed getNearestHospitalBed(int locationX, int locationY) {
         try (Connection connection = Database.getConnection();
              PreparedStatement statement = connection.prepareStatement(Query.BED_NEAREST)) {
@@ -159,12 +199,14 @@ public class HospitalService {
             ResultSet resultSetDistrict = getDistrict.executeQuery(Query.QUEUE_NEED_HOSPITAL);
             resultSetDistrict.next();
             QueueDetailsDAO queueDetailsDAO = new QueueDetailsDAO();
-            queueDetailsDAO.setDistrict(resultSetDistrict.getString("maxdis"));
 
             ResultSet resultSetLength = getLength.executeQuery(Query.QUEUE_LENGTH);
             resultSetLength.next();
             queueDetailsDAO.setLength(resultSetLength.getInt("length"));
 
+            if (queueDetailsDAO.getLength() > 0) {
+                queueDetailsDAO.setDistrict(resultSetDistrict.getString("maxdis"));
+            }
             return queueDetailsDAO;
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -197,7 +239,6 @@ public class HospitalService {
             bed.setHospitalId((UUID) resultSet.getObject("hospitalid"));
             bed.setStatus(StatusType.valueOf(resultSet.getString("status")));
             bedList.add(bed);
-            System.out.println(bed);
         }
         return bedList;
     }

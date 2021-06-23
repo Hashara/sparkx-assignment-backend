@@ -20,7 +20,8 @@ public class Query {
     /* hospital queries */
     public static final String HOSPITAL_CREATE = "INSERT INTO " + HOSPITAL_TABLE + " (hospitalid, name, district, location_x, location_y) VALUES (?, ?, ?::district, ?, ?)";
     public static final String HOSPITAL_ALL = "SELECT hospitalid, name, district, location_x, location_y FROM " + HOSPITAL_TABLE;
-    public static final String HOSPITAL_BY_DISTRICT = HOSPITAL_ALL + "WHERE district=?::district";
+    public static final String HOSPITAL_BY_DISTRICT = HOSPITAL_ALL + " WHERE district=?::district";
+    public static final String HOSPITAL_BY_ID = HOSPITAL_ALL + " WHERE hospitalid=?::uuid";
 
     /* person queries */
     public static final String PERSON_CREATE = "INSERT INTO " + PERSON_TABLE + " (userid, email, password, first_name, last_name, hospitalid, role) VALUES (?, ?, ?, ?, ?, ?, ?::RoleType)";
@@ -28,6 +29,7 @@ public class Query {
     public static final String PERSON_BY_ID = PERSON_ALL + " WHERE userid = ?::uuid";
     public static final String PERSON_BY_ROLE = PERSON_ALL + " WHERE role=?::RoleType";
     public static final String PERSON_BY_EMAIL = "SELECT userid, email, first_name, last_name, hospitalid, role, password FROM " + PERSON_TABLE + " WHERE email=?";
+    public static final String PERSON_BY_ROLE_HOSPITAL = PERSON_ALL + " WHERE role=?::RoleType AND hospitalid=?::uuid";
 
     /* patient queries */
     public static final String PATIENT_CREATE = "INSERT INTO " + PATIENT_TABLE + " ( patientid, district, location_x, location_y, gender, contact, birthdate) VALUES (?, ?::district, ?, ?, ?::genderTypes, ?, ?)";
@@ -48,7 +50,7 @@ public class Query {
     public static final String BED_BY_STATUS = BED_ALL + " WHERE status= ?";
     public static final String BED_NEAREST = "SELECT bedid, bed.hospitalid, status, name, district, location_x, location_y,power((location_x - ?),2) + power((location_y - ?),2) AS distance\n" +
             "\tFROM " + BED_TABLE + " JOIN " + HOSPITAL_TABLE + " ON bed.hospitalid = hospital.hospitalid WHERE status = 'available' ORDER BY distance LIMIT 1";
-    public static final String BED_BY_HOSPITAL_ID = BED_ALL + " WHERE hospitalid=?";
+    public static final String BED_BY_HOSPITAL_ID = BED_ALL + " WHERE hospitalid=?::uuid";
     public static final String BED_UPDATE_STATUS = "UPDATE " + BED_TABLE + " SET status=?::statustype WHERE bedid=? AND hospitalid=?";
 
     /* hospital stats */

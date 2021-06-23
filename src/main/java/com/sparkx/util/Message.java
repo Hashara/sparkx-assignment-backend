@@ -24,4 +24,6 @@ public class Message {
     public static final String FORBIDDEN = "Forbidden";
     public static final String WRONG_DATE_FORMAT = "Date format is wrong";
     public static final String INVALID_CREDENTIALS = "Invalid credentials";
+    public static final String HOSPITAL_COULD_NOT_GET = "Could not get the hospital";
+
 }
