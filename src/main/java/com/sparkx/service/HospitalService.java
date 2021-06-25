@@ -156,6 +156,25 @@ public class HospitalService {
         }
     }
 
+    public Hospital getOnlyHospitalByID(String hospitalId) throws Exception {
+        try (Connection connection = Database.getConnection();
+             PreparedStatement hospitalById = connection.prepareStatement(Query.HOSPITAL_BY_ID);
+        ) {
+            hospitalById.setString(1, hospitalId);
+
+            ResultSet hospitalResult = hospitalById.executeQuery();
+
+            return mapResultSetToHospitalList(hospitalResult).get(0);
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            throw throwables;
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            throw e;
+        }
+    }
+
     public List<BedStatsDAO> getBedStatsWithHospitalDetails() throws SQLException {
         try (Connection connection = Database.getConnection();
              Statement statement = connection.createStatement()) {

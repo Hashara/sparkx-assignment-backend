@@ -1,5 +1,6 @@
 package com.sparkx.model;
 
+import com.sparkx.model.dao.DetailedHospitalDAO;
 import com.sparkx.service.HospitalService;
 
 import java.util.Date;
@@ -10,6 +11,7 @@ public class Record {
     private UUID serialNumber;
     private String bedId;
     private UUID hospitalId;
+    private Hospital hospital;
     private Date regDate;
     private Date admittedDate;
     private Date dischargedDate;
@@ -55,6 +57,15 @@ public class Record {
 
     public void setHospitalId(UUID hospitalId) {
         this.hospitalId = hospitalId;
+        try {
+            this.hospital = new HospitalService().getOnlyHospitalByID(hospitalId.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Hospital getHospital() {
+        return hospital;
     }
 
     public String getBedId() {
