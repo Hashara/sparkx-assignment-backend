@@ -5,6 +5,7 @@ import com.sparkx.Exception.FailedToAddException;
 import com.sparkx.Exception.FailedToGetException;
 import com.sparkx.Exception.InvalidInputException;
 import com.sparkx.Exception.NotCreatedException;
+import com.sparkx.model.dao.BedStatsDAO;
 import com.sparkx.model.dao.DetailedHospitalDAO;
 import com.sparkx.model.dao.NewHospitalDAO;
 import com.sparkx.model.dao.QueueDetailsDAO;
@@ -19,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 
 @WebServlet(name = "MoHServlet", value = "/moh")
 public class MoHController extends Controller {
@@ -48,6 +50,9 @@ public class MoHController extends Controller {
                     break;
                 case "HOSPITAL_BY_ID":
                     getHospitalById(req, resp);
+                    break;
+                case "BED_STATUS_OF_HOSPITALS":
+                    getBedStatusWithHospital(req, resp);
                     break;
 
             }
@@ -109,6 +114,18 @@ public class MoHController extends Controller {
             DetailedHospitalDAO detailedHospitalDAO = hospitalService.getHospitalByID(hospitalId);
             Gson gson = new Gson();
             sendResponse(gson.toJson(detailedHospitalDAO), resp, HttpServletResponse.SC_OK);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            sendMessageResponse(Message.HOSPITAL_COULD_NOT_GET, resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    private void getBedStatusWithHospital(HttpServletRequest req, HttpServletResponse resp) {
+        try {
+            List<BedStatsDAO> bedStatsDAOS = hospitalService.getBedStatsWithHospitalDetails();
+            Gson gson = new Gson();
+            sendResponse(gson.toJson(bedStatsDAOS), resp, HttpServletResponse.SC_OK);
         } catch (Exception e) {
             logger.error(e.getMessage());
             sendMessageResponse(Message.HOSPITAL_COULD_NOT_GET, resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

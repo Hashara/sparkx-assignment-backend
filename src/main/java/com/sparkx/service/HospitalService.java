@@ -7,6 +7,7 @@ import com.sparkx.Exception.NotFoundException;
 import com.sparkx.model.Bed;
 import com.sparkx.model.Person;
 import com.sparkx.model.Types.RoleType;
+import com.sparkx.model.dao.BedStatsDAO;
 import com.sparkx.model.dao.DetailedHospitalDAO;
 import com.sparkx.model.dao.NewHospitalDAO;
 import com.sparkx.model.dao.QueueDetailsDAO;
@@ -155,6 +156,36 @@ public class HospitalService {
         }
     }
 
+    public Hospital getOnlyHospitalByID(String hospitalId) throws Exception {
+        try (Connection connection = Database.getConnection();
+             PreparedStatement hospitalById = connection.prepareStatement(Query.HOSPITAL_BY_ID);
+        ) {
+            hospitalById.setString(1, hospitalId);
+
+            ResultSet hospitalResult = hospitalById.executeQuery();
+
+            return mapResultSetToHospitalList(hospitalResult).get(0);
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            throw throwables;
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            throw e;
+        }
+    }
+
+    public List<BedStatsDAO> getBedStatsWithHospitalDetails() throws SQLException {
+        try (Connection connection = Database.getConnection();
+             Statement statement = connection.createStatement()) {
+            ResultSet resultSet = statement.executeQuery(Query.GET_BED_STATUS_WITH_HOSPITAL);
+            return mapResultSetToBedStatsDAOList(resultSet);
+        } catch (Exception throwables) {
+            throwables.printStackTrace();
+            throw throwables;
+        }
+    }
+
     public Bed getNearestHospitalBed(int locationX, int locationY) {
         try (Connection connection = Database.getConnection();
              PreparedStatement statement = connection.prepareStatement(Query.BED_NEAREST)) {
@@ -212,6 +243,28 @@ public class HospitalService {
             throwables.printStackTrace();
             throw throwables;
         }
+    }
+
+    private List<BedStatsDAO> mapResultSetToBedStatsDAOList(ResultSet resultSet) throws SQLException {
+        List<BedStatsDAO> bedStatsDAOS = new ArrayList<>();
+
+        while (resultSet.next()) {
+            BedStatsDAO bedStatsDAO = new BedStatsDAO();
+
+            Hospital hospital = new Hospital();
+            hospital.setHospitalId((UUID) resultSet.getObject("hospitalid"));
+            hospital.setDistrict(resultSet.getString("name"));
+            hospital.setLocation_x(resultSet.getInt("location_x"));
+            hospital.setLocation_y(resultSet.getInt("location_y"));
+            hospital.setName(resultSet.getString("name"));
+
+            bedStatsDAO.setHospital(hospital);
+            bedStatsDAO.setAvailable(resultSet.getInt("available"));
+            bedStatsDAO.setUnavailable(resultSet.getInt("unavailable"));
+
+            bedStatsDAOS.add(bedStatsDAO);
+        }
+        return bedStatsDAOS;
     }
 
     private List<Hospital> mapResultSetToHospitalList(ResultSet resultSet) throws SQLException {

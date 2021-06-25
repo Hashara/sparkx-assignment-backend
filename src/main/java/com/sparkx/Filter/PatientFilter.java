@@ -23,7 +23,7 @@ public class PatientFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
 
-        Person person = (Person) req.getAttribute("user");
+//        Person person = (Person) req.getAttribute("user");
         if (req.getAttribute("role").equals(RoleType.Patient.toString())
                 || req.getAttribute("role").equals(RoleType.Doctor.toString())
                 || req.getAttribute("role").equals(RoleType.Director.toString())

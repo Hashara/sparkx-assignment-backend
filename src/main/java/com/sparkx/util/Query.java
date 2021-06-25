@@ -52,6 +52,22 @@ public class Query {
             "\tFROM " + BED_TABLE + " JOIN " + HOSPITAL_TABLE + " ON bed.hospitalid = hospital.hospitalid WHERE status = 'available' ORDER BY distance LIMIT 1";
     public static final String BED_BY_HOSPITAL_ID = BED_ALL + " WHERE hospitalid=?::uuid";
     public static final String BED_UPDATE_STATUS = "UPDATE " + BED_TABLE + " SET status=?::statustype WHERE bedid=? AND hospitalid=?";
+    public static final String GET_BED_STATUS_WITH_HOSPITAL = "SELECT \n" +
+            "hospital.hospitalid as hospitalid,\n" +
+            "hospital.name as name, \n" +
+            "hospital.district as district,\n" +
+            "hospital.location_x as location_x,\n" +
+            "hospital.location_y as location_y,\n" +
+            "c.available as available,\n" +
+            "c.unavailable as unavailable\n" +
+            "FROM hospital JOIN (\n" +
+            "SELECT \n" +
+            "\tcount(status = 'available'::statustype OR NULL) as available ,\n" +
+            "\tcount(status = 'unavailable' ::statustype OR NULL) as unavailable,\n" +
+            "\thospitalid\n" +
+            "\tFROM bed  \n" +
+            "group by hospitalid) c\n" +
+            "ON (c.hospitalid = hospital.hospitalid)";
 
     /* hospital stats */
     public static final String OVERALL_AVAILABLE_BED = "SELECT COUNT(bedid), hospitalid FROM " + BED_TABLE + "WHERE status = 'available' GROUP BY hospitalid";
