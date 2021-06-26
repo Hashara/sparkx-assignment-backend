@@ -134,4 +134,6 @@ public class Query {
 
     /* types */
     public static final String GET_ALL_ROLE_TYPE = "SELECT unnest(enum_range(NULL::roleType)) as roleType";
+    public static final String GET_ALL_SEVERITY_TYPE = "SELECT unnest(enum_range(NULL::severitylevel)) as severitylevel";
+
 }

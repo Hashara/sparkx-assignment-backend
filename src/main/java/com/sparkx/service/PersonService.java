@@ -124,4 +124,18 @@ public class PersonService {
         }
         return roleTypes;
     }
+
+    public List<String> getAllSeverityTypes() {
+        List<String> roleTypes = new ArrayList<>();
+        try (Connection connection = Database.getConnection();
+             Statement statement = connection.createStatement();) {
+            ResultSet resultSet = statement.executeQuery(Query.GET_ALL_SEVERITY_TYPE);
+            while (resultSet.next()) {
+                roleTypes.add(resultSet.getString("severitylevel"));
+            }
+        } catch (SQLException throwables) {
+            logger.error(throwables.getMessage());
+        }
+        return roleTypes;
+    }
 }
