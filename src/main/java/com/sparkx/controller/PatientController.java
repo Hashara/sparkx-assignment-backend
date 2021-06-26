@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.sparkx.Exception.NotCreatedException;
 import com.sparkx.Exception.NotFoundException;
 import com.sparkx.model.dao.PatientRecordDAO;
+import com.sparkx.model.dao.PatientSerialNumberDAO;
 import com.sparkx.model.dao.RecordDAO;
 import com.sparkx.model.Patient;
 import com.sparkx.model.Record;
@@ -131,7 +132,7 @@ public class PatientController extends Controller {
         String hospitalId = req.getParameter("id");
         // todo: check role of user = hospital staff|doctor|director and hospital id of user = hospital id
 
-        List<Patient> patientList = patientService.getPatientsByHospitalId(hospitalId);
+        List<PatientSerialNumberDAO> patientList = patientService.getPatientsByHospitalId(hospitalId);
         Gson gson = new Gson();
 
         sendResponse(gson.toJson(patientList), resp, HttpServletResponse.SC_OK);
