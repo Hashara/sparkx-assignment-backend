@@ -5,6 +5,7 @@ import com.sparkx.Exception.NotFoundException;
 import com.sparkx.model.*;
 import com.sparkx.model.Types.RoleType;
 import com.sparkx.model.dao.PatientRecordDAO;
+import com.sparkx.model.dao.PatientSerialNumberDAO;
 import com.sparkx.util.Message;
 import com.sparkx.util.Query;
 import com.sparkx.core.Database;
@@ -122,13 +123,13 @@ public class PatientService {
         }
     }
 
-    public List<Patient> getPatientsByHospitalId(String hospitalId) throws Exception {
-        try(Connection connection = Database.getConnection();
-        PreparedStatement statement = connection.prepareStatement(Query.PATIENTS_BY_HOSPITAL_ID)){
+    public List<PatientSerialNumberDAO> getPatientsByHospitalId(String hospitalId) throws Exception {
+        try (Connection connection = Database.getConnection();
+             PreparedStatement statement = connection.prepareStatement(Query.PATIENTS_BY_HOSPITAL_ID)) {
             statement.setString(1, hospitalId);
 
             ResultSet resultSet = statement.executeQuery();
-            return mapResultSetToPatientList(resultSet);
+            return mapResultSetToPatientSerialNumberList(resultSet);
 
         } catch (Exception throwables) {
             throwables.printStackTrace();
@@ -166,6 +167,30 @@ public class PatientService {
             p.setEmail(resultSet.getString("email"));
             p.setFirst_name(resultSet.getString("first_name"));
             p.setLast_name(resultSet.getString("last_name"));
+            patientList.add(p);
+        }
+        return patientList;
+    }
+
+    private List<PatientSerialNumberDAO> mapResultSetToPatientSerialNumberList(ResultSet resultSet) throws SQLException {
+        List<PatientSerialNumberDAO> patientList = new ArrayList<>();
+
+        //patientid, district, location_x, location_y, gender, contact, birthdate, email, first_name,last_name
+        while (resultSet.next()) {
+            PatientSerialNumberDAO p = new PatientSerialNumberDAO();
+            p.setPatientId((UUID) resultSet.getObject("patientid"));
+            p.setDistrict(resultSet.getString("district"));
+            p.setLocation_x(resultSet.getInt("location_x"));
+            p.setLocation_y(resultSet.getInt("location_y"));
+            p.setGender(resultSet.getString("gender"));
+            p.setContact(resultSet.getString("contact"));
+            p.setBirthDate(resultSet.getDate("birthdate"));
+            p.setEmail(resultSet.getString("email"));
+            p.setFirst_name(resultSet.getString("first_name"));
+            p.setLast_name(resultSet.getString("last_name"));
+            p.setSerialNumber((UUID) resultSet.getObject("serialnumber"));
+            p.setBedId(resultSet.getInt("bedid"));
+            p.setAdmitteddate(resultSet.getDate("admitteddate"));
             patientList.add(p);
         }
         return patientList;

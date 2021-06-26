@@ -36,7 +36,7 @@ public class Query {
     public static final String PATIENT_ALL = "SELECT patientid, district, location_x, location_y, gender, contact, birthdate, email, first_name,last_name FROM " + PATIENT_TABLE + " join " + PERSON_TABLE + " on " + PATIENT_TABLE + ".patientId = " + PERSON_TABLE + ".userId";
     public static final String PATIENT_BY_PATIENT_ID = PATIENT_ALL + " WHERE patientid = ?::uuid";
     public static final String PATIENT_BY_USER_ID = PATIENT_ALL + " WHERE userid = ?";
-    public static final String PATIENTS_BY_HOSPITAL_ID = "SELECT serialnumber, bedid, " + RECORD_TABLE + ".hospitalid, regdate, admitteddate, queueid," + PATIENT_TABLE +
+    public static final String PATIENTS_BY_HOSPITAL_ID = "SELECT serialnumber, bedid, admitteddate," + RECORD_TABLE + ".hospitalid, regdate, admitteddate, queueid," + PATIENT_TABLE +
             ".patientid, district, location_x, location_y, gender, contact, birthdate, email, first_name,last_name " +
             " FROM " + PERSON_TABLE + " join " + PATIENT_TABLE + " on " + PATIENT_TABLE + ".patientId = " + PERSON_TABLE + ".userId"
             + " JOIN " + RECORD_TABLE + " on " + PATIENT_TABLE + ".patientId = " + RECORD_TABLE + ".patientId " +
@@ -134,4 +134,6 @@ public class Query {
 
     /* types */
     public static final String GET_ALL_ROLE_TYPE = "SELECT unnest(enum_range(NULL::roleType)) as roleType";
+    public static final String GET_ALL_SEVERITY_TYPE = "SELECT unnest(enum_range(NULL::severitylevel)) as severitylevel";
+
 }
