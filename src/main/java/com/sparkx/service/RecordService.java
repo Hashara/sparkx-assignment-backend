@@ -86,7 +86,12 @@ public class RecordService {
     public void markDeath(String patientId) throws SQLException, NotFoundException {
         try (Connection connection = Database.getConnection();
              PreparedStatement closeRecord = connection.prepareStatement(Query.RECORD_CLOSE);
-             PreparedStatement patientUpdate = connection.prepareStatement(Query.PATIENT_DEATH)) {
+             PreparedStatement patientUpdate = connection.prepareStatement(Query.PATIENT_DEATH);
+             Statement queueFirst = connection.createStatement();
+             PreparedStatement updateRecord = connection.prepareStatement(Query.RECORD_UPDATE);
+             PreparedStatement deleteQueueItem = connection.prepareStatement(Query.QUEUE_DELETE);
+             PreparedStatement updateBedStatus = connection.prepareStatement(Query.BED_UPDATE_STATUS)
+        ) {
 
             connection.setAutoCommit(false);
             Date date = Util.getDate();
@@ -98,6 +103,33 @@ public class RecordService {
             patientUpdate.setDate(1, date);
             patientUpdate.setString(2, patientId);
 
+            ResultSet resultSet = queueFirst.executeQuery(Query.QUEUE_FIRST);
+            Bed bed = getBedDetailsByPatientId(patientId);
+            try {
+                QueuePatientSerialDAO firstQueue = mapResultSetToQueuePatientSerialDAO(resultSet).get(0);
+                if (firstQueue == null) {
+                    throw new NotFoundException(Message.QUEUE_EMPTY);
+                }
+
+                //  hospitalid =? bedid=? WHERE serialNumber=?
+                updateRecord.setObject(1, bed.getHospitalId());
+                updateRecord.setString(2, bed.getBedId());
+                updateRecord.setObject(3, firstQueue.getSerialNumber());
+
+                deleteQueueItem.setObject(1, firstQueue.getQueueId());
+
+
+                updateRecord.execute();
+                deleteQueueItem.execute();
+            } catch (Exception e) {
+                updateBedStatus.setString(1, String.valueOf(StatusType.available));
+                updateBedStatus.setString(2, bed.getBedId());
+                updateBedStatus.setObject(3, bed.getHospitalId());
+
+//                updateRecord.execute();
+//                deleteQueueItem.execute();
+                updateBedStatus.execute();
+            }
             closeRecord.execute();
             patientUpdate.execute();
             connection.commit();
@@ -162,8 +194,8 @@ public class RecordService {
                 updateBedStatus.setString(2, bed.getBedId());
                 updateBedStatus.setObject(3, bed.getHospitalId());
 
-                updateRecord.execute();
-                deleteQueueItem.execute();
+//                updateRecord.execute();
+//                deleteQueueItem.execute();
                 updateBedStatus.execute();
             }
             statement.execute();
@@ -183,6 +215,16 @@ public class RecordService {
         try (Connection connection = Database.getConnection();
              PreparedStatement bedDetails = connection.prepareStatement(Query.RECORD_BED_BY_SERIAL_NUMBER)) {
             bedDetails.setString(1, serialNumber);
+            ResultSet resultSet = bedDetails.executeQuery();
+            return mapResultSetToBedList(resultSet).get(0);
+
+        }
+    }
+
+    private Bed getBedDetailsByPatientId(String patientId) throws Exception {
+        try (Connection connection = Database.getConnection();
+             PreparedStatement bedDetails = connection.prepareStatement(Query.RECORD_BED_BY_PATIENT_ID)) {
+            bedDetails.setString(1, patientId);
             ResultSet resultSet = bedDetails.executeQuery();
             return mapResultSetToBedList(resultSet).get(0);
 

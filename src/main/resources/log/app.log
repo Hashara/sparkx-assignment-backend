@@ -1,4 +1,2 @@
-[ERROR] 2021-06-23 10:27:06,956 com.sparkx.service.HospitalService getHospitalByID - 
-[ERROR] 2021-06-23 10:27:59,309 com.sparkx.service.HospitalService getHospitalByID - 
-[ERROR] 2021-06-23 10:28:27,534 com.sparkx.service.HospitalService getHospitalByID - 
-[ERROR] 2021-06-23 10:29:54,372 com.sparkx.service.HospitalService getHospitalByID - 
+[ERROR] 2021-06-27 10:31:46,115 com.sparkx.service.RecordService updateDischargeDate - No value specified for parameter 1.
+[ERROR] 2021-06-27 10:43:04,593 com.sparkx.service.RecordService updateDischargeDate - No value specified for parameter 1.

@@ -300,10 +300,16 @@ public class RunApp {
 //            e.printStackTrace();
 //        }
 
+//        try {
+//            QueueDetailsDAO queueDetailsDAO = new HospitalService().getQueueDetails();
+//        } catch (SQLException throwables) {
+//            throwables.printStackTrace();
+//        }
+
         try {
-            QueueDetailsDAO queueDetailsDAO = new HospitalService().getQueueDetails();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            new RecordService().updateDischargeDate("48e5be9b-02fd-4115-99bc-358dbbe54282");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         /* int serverPort = 8000;
