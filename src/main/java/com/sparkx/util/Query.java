@@ -40,7 +40,7 @@ public class Query {
             ".patientid, district, location_x, location_y, gender, contact, birthdate, email, first_name,last_name " +
             " FROM " + PERSON_TABLE + " join " + PATIENT_TABLE + " on " + PATIENT_TABLE + ".patientId = " + PERSON_TABLE + ".userId"
             + " JOIN " + RECORD_TABLE + " on " + PATIENT_TABLE + ".patientId = " + RECORD_TABLE + ".patientId " +
-            " WHERE " + RECORD_TABLE + ".hospitalid = ?::uuid AND dischargeddate is NULL";
+            " WHERE " + RECORD_TABLE + ".hospitalid = ?::uuid AND dischargeddate is NULL AND closed is NULL";
     public static final String PATIENT_DEATH = "UPDATE " + PATIENT_TABLE + " SET death=? WHERE patientid=?::uuid";
     public static final String GET_ALL_DISTRICTS = "SELECT unnest(enum_range(NULL::district)) as district";
 
@@ -102,6 +102,8 @@ public class Query {
     public static final String RECORD_BY_HOSPITAL = "SELECT patientid,serialnumber, bedid, regdate, admitteddate, dischargeddate FROM " + RECORD_TABLE + " WHERE hospitalid = ?";
     public static final String RECORD_UPDATE = "UPDATE " + RECORD_TABLE + " SET queueId = null, hospitalid =?, bedid=? WHERE serialNumber=?";
     public static final String RECORD_BED_BY_SERIAL_NUMBER = "SELECT bedid, hospitalid FROM " + RECORD_TABLE + " WHERE serialnumber = ?::uuid";
+    public static final String RECORD_BED_BY_PATIENT_ID = "SELECT bedid, hospitalid FROM " + RECORD_TABLE + " WHERE patientid = ?::uuid AND dischargeddate is NULL AND closed is null";
+
     public static final String RECORD_CLOSE = "UPDATE " + RECORD_TABLE + " SET closed =? WHERE patientId=?::uuid AND dischargeddate is NULL";
 
     /* daily status*/
