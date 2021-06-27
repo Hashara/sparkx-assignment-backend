@@ -162,8 +162,8 @@ public class RecordService {
                 updateBedStatus.setString(2, bed.getBedId());
                 updateBedStatus.setObject(3, bed.getHospitalId());
 
-                updateRecord.execute();
-                deleteQueueItem.execute();
+//                updateRecord.execute();
+//                deleteQueueItem.execute();
                 updateBedStatus.execute();
             }
             statement.execute();
